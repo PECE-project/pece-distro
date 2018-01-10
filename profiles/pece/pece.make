@@ -68,10 +68,9 @@ projects[subpathauto][subdir] = contrib
 ; =====================
 
 ; Overrides panopoly's views.
-projects[views][version] = 3.11
+projects[views][version] = 3.18
 projects[views][subdir] = contrib
 projects[views][patch][2037469] = http://drupal.org/files/views-exposed-sorts-2037469-1.patch
-projects[views][patch][1036962] = http://drupal.org/files/issues/views-ajax-nginx-1036962-71.patch
 projects[views][patch][2331209] = https://www.drupal.org/files/issues/2331209-4-views-7.x-3.x-undefined-index.patch
 
 projects[views_infinite_scroll][version] = 2.0
@@ -83,7 +82,7 @@ projects[views_litepager][subdir] = contrib
 projects[tvi][version] = 1.0-beta5
 projects[tvi][subdir] = contrib
 
-projects[better_exposed_filters][version] = 3.2
+projects[better_exposed_filters][version] = 3.5
 projects[better_exposed_filters][subdir] = contrib
 
 projects[views_autocomplete_filters][version] = 1.2
@@ -174,10 +173,10 @@ projects[fieldable_panels_panes][patch][2814117] = https://www.drupal.org/files/
 ; =====================
 
 ; The Panopoly Foundation
-projects[panopoly_core][version] = 1.35
+projects[panopoly_core][version] = 1.49
 projects[panopoly_core][subdir] = contrib
 
-projects[panopoly_images][version] = 1.35
+projects[panopoly_images][version] = 1.49
 projects[panopoly_images][subdir] = contrib
 
 ; Panopoly images depending libraries
@@ -189,35 +188,35 @@ libraries[jquery.imgareaselect][download][type] = file
 libraries[jquery.imgareaselect][download][url] = https://github.com/odyniec/imgareaselect/archive/v0.9.11-rc.1.tar.gz
 libraries[jquery.imgareaselect][download][subtree] = imgareaselect-0.9.11-rc.1
 
-projects[panopoly_theme][version] = 1.35
+projects[panopoly_theme][version] = 1.49
 projects[panopoly_theme][subdir] = contrib
 
-projects[panopoly_magic][version] = 1.35
+projects[panopoly_magic][version] = 1.49
 projects[panopoly_magic][subdir] = contrib
 
-projects[panopoly_widgets][version] = 1.35
+projects[panopoly_widgets][version] = 1.49
 projects[panopoly_widgets][subdir] = contrib
+projects[panopoly_widgets][patch][2919401] = https://www.drupal.org/files/issues/panopoly_widgets-update-tablefield-2919401-3.patch
 
-projects[panopoly_admin][version] = 1.35
+projects[panopoly_admin][version] = 1.49
 projects[panopoly_admin][subdir] = contrib
 
-projects[panopoly_users][version] = 1.28
+projects[panopoly_users][version] = 1.49
 projects[panopoly_users][subdir] = contrib
 
 ; The Panopoly Toolset
-projects[panopoly_pages][version] = 1.35
+projects[panopoly_pages][version] = 1.49
 projects[panopoly_pages][subdir] = contrib
 
-projects[panopoly_wysiwyg][version] = 1.35
+projects[panopoly_wysiwyg][version] = 1.49
 projects[panopoly_wysiwyg][subdir] = contrib
 
 projects[panopoly_search][subdir] = contrib
-projects[panopoly_search][version] = 1.35
+projects[panopoly_search][version] = 1.49
 projects[panopoly_search][patch][] = "./patches/panopoly-remove_panelizer_data_alter_callback.patch"
-projects[panopoly_search][patch][] = "https://www.drupal.org/files/issues/solrphpclient_cannot_be-2790595-10.patch"
 
 ; For running the automated tests.
-projects[panopoly_test][version] = 1.27
+projects[panopoly_test][version] = 1.49
 projects[panopoly_test][subdir] = contrib
 
 ; The Panopoly Radix
@@ -251,7 +250,7 @@ projects[eck][subdir]  = contrib
 projects[entity_view_mode][version] = 1.0-rc1
 projects[entity_view_mode][subdir] = contrib
 
-projects[entityreference][version] = 1.2
+projects[entityreference][version] = 1.5
 projects[entityreference][subdir] = contrib
 projects[entityreference][patch][1836106] = "https://www.drupal.org/files/issues/entityreference_1836106_59.patch"
 projects[entityreference][patch][1423778] = "https://www.drupal.org/files/issues/entityreference-1423778-brokenhandler.diff"
@@ -262,7 +261,7 @@ projects[entityreference_view_widget][subdir] = contrib
 projects[er_viewmode][version] = 1.0-alpha1
 projects[er_viewmode][subdir] = contrib
 
-projects[entityconnect][version] = 1.0-rc5
+projects[entityconnect][version] = 2.0-rc1
 projects[entityconnect][subdir] = contrib
 
 projects[inline_entity_form][version] = 1.8
@@ -294,9 +293,8 @@ projects[smart_trim][subdir] = contrib
 projects[file_entity][version] = 2.0-beta2
 projects[file_entity][subdir] = contrib
 
-projects[media][version] = 2.0-beta1
+projects[media][version] = 2.14
 projects[media][subdir] = contrib
-projects[media][patch][] = https://www.drupal.org/files/issues/unable_to_create-2568123-2.patch
 
 projects[ckeditor][version] = 1.16
 projects[ckeditor][subdir] = contrib
@@ -414,7 +412,7 @@ projects[creative_commons][version] = 1.2
 
 ; Legal
 projects[legal][subdir] = contrib
-projects[legal][version] = 1.5
+projects[legal][version] = 1.10
 
 ; Profile 2
 projects[profile2][subdir] = contrib
@@ -481,15 +479,15 @@ projects[backup_migrate_sftp][version] = 1.0
 
 ; SMTP Mail
 projects[smtp][subdir] = contrib
-projects[smtp][version] = 1.4
+projects[smtp][version] = 1.7
 
 ; Services
 projects[services][subdir] = contrib
-projects[services][version] = 3.15
+projects[services][version] = 3.20
 
 ; Services Views
 projects[services_views][subdir] = contrib
-projects[services_views][version] = 1.1
+projects[services_views][version] = 1.3
 
 ; =====================
 ; Integrations
