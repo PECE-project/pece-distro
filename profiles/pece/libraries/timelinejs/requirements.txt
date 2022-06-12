@@ -3,7 +3,7 @@ bcrypt==3.1.4
 boto==2.32.1
 cffi==1.11.5
 Click==7.0
-cryptography==2.3.1
+cryptography==3.3.2
 ecdsa>=0.13.3
 enum34==1.1.6
 Fabric==1.10.0
