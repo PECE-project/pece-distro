@@ -6,6 +6,6 @@ boto==2.32.1
 itsdangerous==0.24
 wsgiref==0.1.2
 Fabric==1.10.0
-pyOpenSSL==0.15.1
+pyOpenSSL==17.5.0
 
 pycrypto==2.6.1
