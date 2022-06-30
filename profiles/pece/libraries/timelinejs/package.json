@@ -3,7 +3,7 @@
   "version": "3.4.0",
   "description": "TimelineJS v3: A Storytelling Timeline built in JavaScript.",
   "dependencies": {
-    "less": "^2.1.1",
+    "less": "^3.0.2",
     "less-plugin-clean-css": "^1.2.0"
   },
   "devDependencies": {},
