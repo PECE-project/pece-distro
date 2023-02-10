@@ -9,3 +9,4 @@ Fabric==1.10.0
 pyOpenSSL==0.15.1
 
 pycrypto==2.6.1
+cryptography>=39.0.1 # not directly required, pinned by Snyk to avoid a vulnerability
