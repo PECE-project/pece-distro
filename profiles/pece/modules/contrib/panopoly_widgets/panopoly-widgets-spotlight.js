@@ -14,7 +14,8 @@ Drupal.settings.spotlight_settings = Drupal.settings.spotlight_settings || {};
               $slides = $widget.find('.panopoly-spotlight'),
               $controls = $widget.find('.panopoly-spotlight-buttons-wrapper li'),
               current = 0,
-              timer = null;
+              timer = null,
+              timer_update = false;
 
           function start() {
             if (timer === null) {
@@ -37,7 +38,9 @@ Drupal.settings.spotlight_settings = Drupal.settings.spotlight_settings || {};
             }
 
             // Click the control for the next slide.
+            timer_update = true;
             $controls.eq(current).children('a').trigger('click.panopoly-widgets-spotlight');
+            timer_update = false;
           }
 
           // Navigation is hidden by default, display it if JavaScript is enabled.
@@ -62,10 +65,22 @@ Drupal.settings.spotlight_settings = Drupal.settings.spotlight_settings || {};
               $slides.hide();
               $slides.filter(selector).show();
 
-              // Start the timer over if it's running.
-              if (timer !== null) {
+              if (timer_update) {
+                // Reset the timer so we advance to the next slide.
                 stop();
                 start();
+              }
+              else {
+                // Set the new slide to current.
+                var match = selector.match(/^#panopoly-spotlight-(\d+)$/)
+                if (match) {
+                  current = parseInt(match[1]);
+                }
+
+                // Stop the timer (if it's running).
+                if (timer !== null) {
+                  $widget.find('.panopoly-spotlight-pause-play').trigger('click.panopoly-widgets-spotlight');
+                }
               }
 
               return false;

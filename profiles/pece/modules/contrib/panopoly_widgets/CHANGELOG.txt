@@ -1,3 +1,18 @@
+Panopoly Widgets 7.x-1.94, 2024-01-16
+-------------------
+- Security update to File Entity 2.38.
+
+Panopoly Widgets 7.x-1.93, 2023-12-18
+-------------------
+- Pause spotlight when manually changing slide for accessibility.
+- Add focus highlighting to Spotlight pager and Next/Previous/Play/Pause
+  items.
+- Update Media and File Entity for PHP 8.x.
+
+Panopoly Widgets 7.x-1.92, 2023-06-12
+-------------------
+- No changes since last release.
+
 Panopoly Widgets 7.x-1.91, 2023-04-05
 -------------------
 - Spotlight should respect prefers-reduced-motion.

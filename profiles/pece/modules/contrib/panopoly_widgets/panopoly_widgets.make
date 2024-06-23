@@ -9,6 +9,7 @@ projects[tablefield][version] = 3.6
 projects[tablefield][subdir] = contrib
 projects[tablefield][patch][3128030] = https://www.drupal.org/files/issues/2020-04-22/tablefield-header-orientation-3128030-5.patch
 projects[tablefield][patch][3137640] = https://www.drupal.org/files/issues/2020-05-18/tablefield-7008-fix-3137640-2.patch
+projects[tablefield][patch][3385741] = https://www.drupal.org/files/issues/2023-09-06/tablefield-php81-htmlspecialchars-3385741-2.patch
 
 projects[simple_gmap][version] = 1.5
 projects[simple_gmap][subdir] = contrib
@@ -18,16 +19,17 @@ projects[simple_gmap][patch][2902178] = https://www.drupal.org/files/issues/2021
 
 projects[menu_block][version] = 2.9
 projects[menu_block][subdir] = contrib
+projects[menu_block][patch][2642556] = https://www.drupal.org/files/issues/2023-06-20/menu_block-2642556-11.patch
 
 ; Panopoly - Contrib - Files & Media
 
-projects[file_entity][version] = 2.36
+projects[file_entity][version] = 2.38
 projects[file_entity][subdir] = contrib
 
-projects[media][version] = 2.28
+projects[media][version] = 2.30
 projects[media][subdir] = contrib
 
-projects[media_youtube][version] = 3.11
+projects[media_youtube][version] = 3.12
 projects[media_youtube][subdir] = contrib
 
 projects[media_vimeo][version] = 2.1

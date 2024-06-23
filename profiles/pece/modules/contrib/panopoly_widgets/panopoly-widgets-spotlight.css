@@ -184,5 +184,24 @@
 .pane-bundle-spotlight .panopoly-spotlight .panopoly-image-full {
     border: 0;
 }
-
+.pane-bundle-spotlight .panopoly-spotlight-function-buttons a:focus,
+.pane-bundle-spotlight .panopoly-spotlight-function-buttons a:hover,
+.pane-bundle-spotlight .panopoly-spotlight-function-buttons a.paused,
+.pane-bundle-spotlight .panopoly-spotlight-buttons-wrapper li.active,
+.pane-bundle-spotlight .panopoly-spotlight-buttons-wrapper li:focus,
+.pane-bundle-spotlight .panopoly-spotlight-buttons-wrapper li:hover {
+  opacity: 1;
+}
+.pane-bundle-spotlight .panopoly-spotlight-function-buttons a:focus,
+.pane-bundle-spotlight .panopoly-spotlight-function-buttons a:hover,
+.pane-bundle-spotlight .panopoly-spotlight-buttons-wrapper li a:focus,
+.pane-bundle-spotlight .panopoly-spotlight-buttons-wrapper li a:hover {
+  box-shadow: inset 0 0 0 3px white;
+  outline: none;
+  outline-offset: 0;
+}
+.pane-bundle-spotlight .panopoly-spotlight-buttons-wrapper li.active a:focus {
+  outline: dotted 2px darkslategray;
+  outline-offset: -2px;
+}
 
