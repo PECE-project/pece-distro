@@ -8,7 +8,7 @@
 /**
  * The current system version.
  */
-define('VERSION', '7.98');
+define('VERSION', '7.101');
 
 /**
  * Core API compatibility.
@@ -454,6 +454,9 @@ abstract class DrupalCacheArray implements ArrayAccess {
    * Destructs the DrupalCacheArray object.
    */
   public function __destruct() {
+    if ($this->bin == 'cache_form' && !variable_get('drupal_cache_array_persist_cache_form', FALSE)) {
+      return;
+    }
     $data = array();
     foreach ($this->keysToPersist as $offset => $persist) {
       if ($persist) {
@@ -2039,6 +2042,8 @@ function watchdog_exception($type, Exception $exception, $message = NULL, $varia
  *   - WATCHDOG_DEBUG: Debug-level messages.
  * @param $link
  *   A link to associate with the message.
+ *   SECURITY NOTE: Make sure your link is properly sanitized.
+ *   Use the l() function to generate secure links.
  *
  * @see watchdog_severity_levels()
  * @see hook_watchdog()
@@ -2280,7 +2285,8 @@ function drupal_block_denied($ip) {
  *   The number of random bytes to fetch and base64 encode.
  *
  * @return string
- *   The base64 encoded result will have a length of up to 4 * $byte_count.
+ *   A base-64 encoded string, with + replaced with -, / with _ and any =
+ *   padding characters removed.
  */
 function drupal_random_key($byte_count = 32) {
   return drupal_base64_encode(drupal_random_bytes($byte_count));
