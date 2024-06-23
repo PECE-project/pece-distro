@@ -276,7 +276,7 @@ class TestSubContext extends RawDrupalContext implements DrupalSubContextInterfa
    */
   public function configurePrivateFiles($event) {
     $this->configVariables['file_private_path'] = variable_get('file_private_path', 'not set');
-    if ($this->configVariables['file_private_path'] !== 'not set') {
+    if ($this->configVariables['file_private_path'] === 'not set') {
       $file_public_path = variable_get('file_public_path', conf_path() . '/files');
       if (empty($file_public_path)) {
         throw new \Exception('Files must be configured for @drupal_private_files tests to work!');
@@ -1032,7 +1032,7 @@ class TestSubContext extends RawDrupalContext implements DrupalSubContextInterfa
   public function clearDblog() {
     db_delete('watchdog')->execute();
   }
-  
+
   /**
    * @When I select the first autocomplete option for :text on the :field field
    */
@@ -1153,6 +1153,23 @@ class TestSubContext extends RawDrupalContext implements DrupalSubContextInterfa
       catch (NoAlertOpenError $e) {
         sleep(1);
       }
+    }
+  }
+
+  /**
+   * @Then /the (?i)get(?-i) argument "(?P<argument>[^"]*)" should match "(?P<value>[^"]*)"$/
+   */
+  public function getArgumentMatches($argument, $value) {
+    $url = $this->getSession()->getCurrentUrl();
+    $query_string = parse_url($url, PHP_URL_QUERY);
+    parse_str((string) $query_string, $query);
+
+    if (!isset($query[$argument])) {
+      $query[$argument] = '';
+    }
+
+    if ($query[$argument] !== $value) {
+      throw new \Exception("GET argument '{$argument}' with value '{$query[$argument]}' doesn't match '{$value}'");
     }
   }
 

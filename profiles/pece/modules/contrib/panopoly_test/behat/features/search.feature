@@ -24,7 +24,8 @@ Feature: Search
   @api @panopoly_search
   Scenario: Performing a search with results
     Given I am on the homepage
-    And "panopoly_test_page" content:
+      And I run drush "vdel" "panopoly_search_keys_mode -y"
+      And "panopoly_test_page" content:
       | title           | body        | created            | status |
       | fxabR86L Page 1 | Test page 1 | 01/01/2001 11:00am |      1 |
       | fxabR86L Page 2 | Test page 2 | 01/02/2001 11:00am |      1 |
@@ -36,6 +37,27 @@ Feature: Search
       And I should see "2 items matched fxabR86L"
       And I should see "Filter by Type"
       And I should not see "X9A1YXwc"
+      And the URL should match "/search/site/fxabR86L$"
+      And the GET argument "keys" should match ""
+
+  @api @panopoly_search
+  Scenario: Search keys in GET arguments
+    Given I am on the homepage
+      And I run drush "vset" "panopoly_search_keys_mode get"
+      And "panopoly_test_page" content:
+      | title           | body        | created            | status |
+      | fxabR86L Page 1 | Test page 1 | 01/01/2001 11:00am |      1 |
+      | fxabR86L Page 2 | Test page 2 | 01/02/2001 11:00am |      1 |
+      | X9A1YXwc Page 3 | Test page 3 | 01/03/2001 11:00am |      1 |
+      And I run drush "cron"
+    When I fill in "fxabR86L" for "Enter your keywords" in the "Search" region
+      And I press "Search" in the "Search" region
+    Then I should see "Search Results"
+      And I should see "2 items matched fxabR86L"
+      And I should see "Filter by Type"
+      And I should not see "X9A1YXwc"
+      And the URL should match "/search/site$"
+      And the GET argument "keys" should match "fxabR86L"
 
   @api @javascript @panopoly_search
   Scenario: Search for content in widgets (not in the body)

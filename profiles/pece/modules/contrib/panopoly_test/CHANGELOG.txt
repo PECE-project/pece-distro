@@ -1,3 +1,17 @@
+Panopoly Test 7.x-1.94, 2024-01-16
+-------------------
+- No changes since last release.
+
+Panopoly Test 7.x-1.93, 2023-12-18
+-------------------
+- Behat code for configuring private files (if they aren't configured)
+  doesn't work.
+- Allow search keywords in GET arguments (rather than path).
+
+Panopoly Test 7.x-1.92, 2023-06-12
+-------------------
+- No changes since last release.
+
 Panopoly Test 7.x-1.91, 2023-04-05
 -------------------
 - No changes since last release.
