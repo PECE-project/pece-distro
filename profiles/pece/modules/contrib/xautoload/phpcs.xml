@@ -1,0 +1,113 @@
+<?xml version="1.0"?>
+<!--
+   See http://pear.php.net/manual/en/package.php.php-codesniffer.annotated-ruleset.php
+   See https://github.com/squizlabs/PHP_CodeSniffer/wiki/Annotated-Ruleset
+-->
+<ruleset name="DrupalFeatures">
+ <description>Drupal coding standard, relaxed for xautoload module</description>
+
+ <!-- Inherit everything from "Drupal" coding standard. -->
+ <rule ref="Drupal">
+
+  <!-- Ignore violations that we don't intend to fix any time soon. -->
+  <!-- Let's not touch .txt files for now. -->
+  <exclude name="Drupal.Files.TxtFileLineLength.TooLong"/>
+  <!-- Let's not add native 'array' type hints for now. -->
+  <exclude name="Drupal.Commenting.FunctionComment.TypeHintMissing"/>
+  <!-- Do not require first letter in comment to be capital letter. -->
+  <exclude name="Drupal.Commenting.DocComment.LongNotCapital"/>
+  <!-- Do not require function/method short description. -->
+  <exclude name="Drupal.Commenting.DocComment.MissingShort"/>
+  <!-- Do not require parameter comment. -->
+  <exclude name="Drupal.Commenting.FunctionComment.MissingParamComment"/>
+  <exclude name="Drupal.Commenting.FunctionComment.ParamCommentFullStop"/>
+  <!-- Do not require class doc comment. -->
+  <exclude name="Drupal.Commenting.ClassComment.Missing"/>
+  <!-- Allow poorly formatted function comment. -->
+  <exclude name="Drupal.Commenting.DocComment.ShortSingleLine"/>
+  <!-- Allow pearl-style inline comments. -->
+  <exclude name="Drupal.Commenting.InlineComment.WrongStyle"/>
+  <!-- Do not require full stop at end of inline comments. -->
+  <exclude name="Drupal.Commenting.DocComment.ShortFullStop"/>
+  <!-- Do not require comment text on @return doc. -->
+  <exclude name="Drupal.Commenting.FunctionComment.MissingReturnComment"/>
+  <!-- Allow pearl-style inline comments. -->
+  <exclude name="Drupal.Files.LineLength.TooLong"/>
+  <!-- Allow pearl-style inline comments. -->
+  <exclude name="Drupal.Commenting.InlineComment.InvalidEndChar"/>
+
+  <!-- Allow pearl-style inline comments. -->
+  <exclude name="Drupal.Commenting.InlineComment.NotCapital"/>
+  <!-- Allow pearl-style inline comments. -->
+  <exclude name="Drupal.Arrays.DisallowLongArraySyntax"/>
+  <!-- Allow pearl-style inline comments. -->
+  <exclude name="Drupal.NamingConventions"/>
+  <!-- Allow pearl-style inline comments. -->
+  <exclude name="Drupal.Commenting.DocComment.ShortNotCapital"/>
+  <!-- Allow file doc in SOME class files. -->
+  <exclude name="Drupal.Commenting.FileComment"/>
+  <!-- Not all class files follow PSR-4. -->
+  <exclude name="Drupal.Classes.ClassFileName"/>
+  <exclude name="Drupal.Commenting.FunctionComment.Missing"/>
+
+  <!-- Allow string concat for code readability. -->
+  <exclude name="Drupal.Strings.UnnecessaryStringConcat"/>
+
+  <exclude name="Drupal.Commenting.InlineComment.SpacingBefore"/>
+  <exclude name="Drupal.Formatting.MultiLineAssignment.MultiLineAssignmentIndent"/>
+  <exclude name="Drupal.Commenting.DocComment.LongFullStop"/>
+  <exclude name="Drupal.Commenting.Deprecated.DeprecatedMissingSeeTag"/>
+  <exclude name="Drupal.Commenting.Deprecated.IncorrectTextLayout"/>
+  <exclude name="Drupal.Commenting.InlineComment.SpacingAfter"/>
+  <!--
+  <exclude name=""/>
+  <exclude name=""/>
+  <exclude name=""/>
+  <exclude name=""/>
+  <exclude name=""/>
+  <exclude name=""/>
+  <exclude name=""/>
+  <exclude name=""/>
+  <exclude name=""/>
+  -->
+  <!-- Allow methods that have same name (but lowercase) as the class. -->
+  <exclude name="Generic.NamingConventions.ConstructorName.OldStyle"/>
+
+  <!-- This inspection is inaccurate, forbids @return \stdClass. -->
+  <exclude name="Drupal.Commenting.FunctionComment.InvalidReturn"/>
+
+  <!-- Ignore some rules that produce false positives. -->
+  <!-- This rule expects the wrong indentation for multiline expressions as
+       array values. -->
+  <exclude name="Drupal.Arrays.Array.ArrayIndentation"/>
+  <!-- Some strings for l() should not be translated. -->
+  <exclude name="Drupal.Semantics.LStringTranslatable.LArg"/>
+
+  <!-- Allow classes referenced as FQCN without import. -->
+  <exclude name="Drupal.Classes.FullyQualifiedNamespace.UseStatementMissing"/>
+
+  <!-- Some of the test modules don't have a description. -->
+  <exclude name="Drupal.InfoFiles.Required.Description"/>
+  <!-- More customizations for features. -->
+
+  <!-- Ignore some rules by choice. -->
+  <!-- Inline @var docs for local variables are very useful. -->
+  <exclude name="Drupal.Commenting.InlineComment.DocBlock"/>
+  <!-- Class names like "What_How" are preferable to "HowWhat". -->
+  <exclude name="Drupal.NamingConventions.ValidClassName.NoUnderscores"/>
+  <!-- Param and return docs on hooks may be redundant, but they are empowering
+       for the IDE. -->
+  <exclude name="Drupal.Commenting.HookComment.HookParamDoc"/>
+  <exclude name="Drupal.Commenting.HookComment.HookReturnDoc"/>
+ </rule>
+
+ <rule ref="Drupal.NamingConventions.ValidFunctionName.ScopeNotCamelCaps">
+  <exclude-pattern>tests/features.test</exclude-pattern>
+ </rule>
+
+ <rule ref="Drupal.Files.LineLength.TooLong">
+  <!-- Two function docs have too long lines that cannot be shortened. -->
+  <exclude-pattern>includes/features.ctools.inc</exclude-pattern>
+ </rule>
+
+</ruleset>

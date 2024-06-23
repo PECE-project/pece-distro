@@ -196,3 +196,93 @@ function _xautoload_register_drupal() {
   // Register prefixes and namespaces for enabled extensions.
   $services->proxyFinder->observeFirstCacheMiss($services->phaseControl);
 }
+
+/**
+ * Implements hook_help().
+ *
+ * Provides text for the help page.
+ */
+function xautoload_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#xautoload':
+      // Some of the strings below call t() with a placeholder string, without
+      // providing replacement values. This is totally fine, the replacement
+      // happens below with an additional call to format_string().
+      $output = ''
+        . '<h3>' . t('About') . '</h3>'
+        . '<p>' . t('X Autoload is a module that loads PHP classes which would not be loaded by Drupal core.') . '</p>'
+        . '<h3>' . t('Online docs') . '</h3>'
+        . '<p>' . t('Online documentation is probably more up to date and more complete than this help page.') . '</p>'
+        . '<ul>'
+        . '<li>' . t('Check the !module_page.') . '</li>'
+        . '<li>' . t('Check the !doc_pages.') . '</li>'
+        . '</ul>'
+        . '<h3>' . t('As an administrator') . '</h3>'
+        . '<p>' . t('Visit !config_link to manage performance settings for X Autoload.') . '</p>'
+        . '<h3>' . t('As a site builder') . '</h3>'
+        . '<p>' . t('The module will typically be downloaded and installed automatically as a dependency of something else.') . '</p>'
+        . '<h3>' . t('As a module developer') . '</h3>'
+        . '<p>' . t('Add xautoload as a dependency to modules that need it.') . '</p>'
+        . '<p>' . t('In !path:', array('!path' => '<code>path/to/mymodule/mymodule.info</code>')) . '</p>'
+        . '<blockquote><pre>'
+        . <<<'EOT'
+; Strictly require xautoload.
+dependencies[] = xautoload
+EOT
+        . '</pre></blockquote>'
+        . '<p>' . t('If you want to publish your module as a contrib module, you might consider to depend on !psr4xa or !psr4ra instead, to give users a choice between xautoload and !registry_autoload, via the !alternatives module.') . '</p>'
+        . '<blockquote><pre>'
+        . <<<'EOT'
+; Allow to use registry_autoload instead of xautoload, via alternatives module.
+dependencies[] = psr4xa
+EOT
+        . '</pre></blockquote>'
+        . '<p>' . t('Create PSR-4 class files as you would in Drupal 8.') . '</p>'
+        . '<p>' . t('In !path:', array('!path' => '<code>path/to/mymodule/src/Foo/Bar.php</code>')) . '</p>'
+        . '<blockquote><div class="codeblock">'
+        . highlight_string(
+          <<<'EOT'
+<?php
+
+namespace Drupal\mymodule\Foo;
+
+class Bar {..}
+EOT
+          ,
+          TRUE)
+        . '</div></blockquote>'
+        . '<p>' . t('The class will be available immediately, no need to clear any caches.') . '</p>'
+        . '<h3>' . t('Troubleshooting') . '</h3>'
+        . '<p>' . t('In most cases if autoloading is not working, the class files were named incorrectly, or the namespace is wrong.') . '</p>'
+        . '';
+
+      // Link options to make all links open in a new page.
+      $link_options = array(
+        'attributes' => array('target' => '_blank'),
+      );
+
+      $replacements = array(
+        '!module_page' => l(t('module page'), 'https://drupal.org/project/xautoload', $link_options),
+        '!doc_pages' => l(t('doc pages'), 'https://www.drupal.org/node/1976196', $link_options),
+        '!config_link' => l(
+          t('performance settings'),
+          'admin/config/development/performance',
+          $link_options + array('fragment' => 'edit-xautoload')),
+      );
+
+      foreach (array(
+        'psr4xa' => 'PSR-4 XA',
+        'psr4ra' => 'PSR-4 RA',
+        'alternatives' => 'Alternatives',
+        'registry_autoload' => 'Registry autoload',
+      ) as $module => $name) {
+        $replacements["!$module"] = l($name, "https://drupal.org/project/$module", $link_options);
+      }
+
+      // Replace placeholders which were not replaced in the t() calls above.
+      return format_string($output, $replacements);
+
+    default:
+      return NULL;
+  }
+}

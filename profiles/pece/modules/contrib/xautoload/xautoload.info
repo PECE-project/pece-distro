@@ -3,8 +3,8 @@ description = "Autoload based on PSR-0, PSR-4 and a custom PHP 5.2 compatibility
 core = 7.x
 php = 5.3
 
-; Information added by Drupal.org packaging script on 2020-06-06
-version = "7.x-5.8"
+; Information added by Drupal.org packaging script on 2023-03-10
+version = "7.x-5.9"
 core = "7.x"
 project = "xautoload"
-datestamp = "1591465423"
+datestamp = "1678492494"
