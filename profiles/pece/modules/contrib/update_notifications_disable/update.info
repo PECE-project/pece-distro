@@ -1,0 +1,10 @@
+name = Update Notification Disable
+description = "Turns off core's update notification and removes warning about the Update status module not being enabled."
+core = 7.x
+
+; Information added by Drupal.org packaging script on 2017-05-25
+version = "7.x-1.1"
+core = "7.x"
+project = "update_notifications_disable"
+datestamp = "1495750387"
+
