@@ -90,6 +90,8 @@ class SearchApiSolrService extends SearchApiAbstractService {
       'site_hash' => $this->options ? FALSE : TRUE,
       'autocorrect_spell' => TRUE,
       'autocorrect_suggest_words' => TRUE,
+      'highlight_prefix' => '',
+      'highlight_suffix' => '',
     );
 
     if (!$options['clean_ids']) {
@@ -202,6 +204,37 @@ class SearchApiSolrService extends SearchApiAbstractService {
       '#description' => t("If search keywords are given, use Solr's capabilities to create a highlighted search excerpt for each result. " .
           'Whether the excerpts will actually be displayed depends on the settings of the search, though.'),
       '#default_value' => $options['excerpt'],
+    );
+    // Make in-built highlighting from the solr server configurable.
+    $form['advanced']['highlight_prefix'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Highlight prefix'),
+      '#default_value' => $options['highlight_prefix'],
+      '#description' => t('Change the prefix if using Solr to perform highlighting (not highlight processor). If empty, defaults to %tag', array('%tag' => '<strong>')),
+      '#states' => array(
+        'invisible' => array(
+          array(
+            ':input[name="options[form][advanced][excerpt]"]' => array(
+              'checked' => FALSE,
+            ),
+          ),
+        ),
+      ),
+    );
+    $form['advanced']['highlight_suffix'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Highlight suffix'),
+      '#default_value' => $options['highlight_suffix'],
+      '#description' => t('Change the suffix if using Solr to perform highlighting (not highlight processor). If empty, defaults to %tag', array('%tag' => '</strong>')),
+      '#states' => array(
+        'invisible' => array(
+          array(
+            ':input[name="options[form][advanced][excerpt]"]' => array(
+              'checked' => FALSE,
+            ),
+          ),
+        ),
+      ),
     );
     $form['advanced']['retrieve_data'] = array(
       '#type' => 'checkbox',
@@ -1498,7 +1531,26 @@ class SearchApiSolrService extends SearchApiAbstractService {
    *   The snippet(s), properly formatted as HTML.
    */
   protected function formatHighlighting($snippet) {
-    return preg_replace('#\[(/?)HIGHLIGHT\]#', '<$1strong>', $snippet);
+    $search = array('[HIGHLIGHT]', '[/HIGHLIGHT]');
+    return str_replace($search, $this->getHighlightingPrefixSuffix(), $snippet);
+  }
+
+  /**
+   * Returns the prefix and suffix for highlighting matches in the excerpt.
+   *
+   * @return string[]
+   *   An array of 2 items, prefix and suffix.
+   */
+  protected function getHighlightingPrefixSuffix() {
+    $prefix = '<strong>';
+    $suffix = '</strong>';
+    if (!empty($this->options['highlight_prefix'])) {
+      $prefix = $this->options['highlight_prefix'];
+    }
+    if (!empty($this->options['highlight_suffix'])) {
+      $suffix = $this->options['highlight_suffix'];
+    }
+    return array($prefix, $suffix);
   }
 
   /**
@@ -2268,7 +2320,7 @@ class SearchApiSolrService extends SearchApiAbstractService {
    * Implements SearchApiMultiServiceInterface::queryMultiple().
    */
   public function queryMultiple(array $options = array()) {
-    return new SearchApiMultiQuery($this->server, $options);
+    return search_api_multi_query($options);
   }
 
   /**

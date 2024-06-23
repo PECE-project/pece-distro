@@ -1,3 +1,11 @@
+Search API Solr Search 1.16 (2023-11-02):
+-----------------------------------------
+- #3324942 by Ronino, drunken monkey: Fixed deprecation warning in
+  SearchApiSolrDocument::getIterator().
+- #1845920 by silverham, drunken monkey: Added config option for highlight tags.
+- #3118390 by drunken monkey, bburg: Fixed
+  SearchApiSolrService::queryMultiple().
+
 Search API Solr Search 1.15 (2019-11-07):
 -----------------------------------------
 - #3082039 by xlin, drunken monkey: Added a hidden variable for switching the

@@ -370,6 +370,7 @@ class SearchApiSolrDocument implements IteratorAggregate {
    * @return Traversable
    *   An iterator over this document's fields.
    */
+  #[\ReturnTypeWillChange]
   public function getIterator() {
     $arrayObject = new ArrayObject($this->fields);
 
