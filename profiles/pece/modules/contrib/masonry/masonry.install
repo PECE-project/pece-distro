@@ -27,17 +27,17 @@ function masonry_requirements($phase) {
     }
 
     $imagesloaded = libraries_detect('imagesloaded');
-    $requirements['imagesloaded'] = array(
+    $requirements['masonry_imagesloaded'] = array(
       'title' => $t('jQuery Images Loaded'),
     );
     if ($imagesloaded['installed']) {
-      $requirements['imagesloaded']['value'] = $imagesloaded['version'];
-      $requirements['imagesloaded']['severity'] = REQUIREMENT_OK;
+      $requirements['masonry_imagesloaded']['value'] = $imagesloaded['version'];
+      $requirements['masonry_imagesloaded']['severity'] = REQUIREMENT_OK;
     }
     else {
-      $requirements['imagesloaded']['value'] = $imagesloaded['error'];
-      $requirements['imagesloaded']['description'] = $imagesloaded['error message'];
-      $requirements['imagesloaded']['severity'] = REQUIREMENT_ERROR;
+      $requirements['masonry_imagesloaded']['value'] = $imagesloaded['error'];
+      $requirements['masonry_imagesloaded']['description'] = $imagesloaded['error message'];
+      $requirements['masonry_imagesloaded']['severity'] = REQUIREMENT_ERROR;
     }
 
   }

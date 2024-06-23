@@ -34,7 +34,7 @@ function masonry_libraries_info() {
       // imagesLoaded 3.x
       'pattern' => '/imagesLoaded\s+PACKAGED\s+v?([0-9\.]+)/',
       'lines' => 2,
-      'cols' => 30,
+      'cols' => 35,
     ),
     'files' => array(
       'js' => array(
@@ -111,7 +111,8 @@ function masonry_default_options() {
     'masonry_fit_width' => 0,
     'masonry_rtl' => 0,
     'masonry_images_first' => 1,
-    'masonry_stamp_selector' => ''
+    'masonry_stamp_selector' => '',
+    'masonry_percent_position' => 0,
   );
 
   // Allow other modules to alter the default options
@@ -211,6 +212,12 @@ function masonry_add_options_to_form(&$form, $default_values) {
     '#description' => t("Load all images first before triggering Masonry."),
     '#default_value' => $default_values['masonry_images_first'],
   );
+  $form['masonry_percent_position'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Percent position'),
+    '#description' => t("Sets item positions in percent values, rather than pixel values. Checking this will works well with percent-width items, as items will not transition their position on resize. See the <a href='http://masonry.desandro.com/options.html#percentposition'>masonry doc</a> for more information."),
+    '#default_value' => $default_values['masonry_percent_position'],
+  );
 
   // Allow other modules to alter the form
   drupal_alter('masonry_options_form', $form, $default_values);
@@ -262,7 +269,8 @@ function masonry_apply($container, $options = array()) {
           'fit_width' => (bool) $options['masonry_fit_width'],
           'rtl' => (bool) $options['masonry_rtl'],
           'images_first' => (bool) $options['masonry_images_first'],
-          'stamp' => $options['masonry_stamp_selector']
+          'stamp' => $options['masonry_stamp_selector'],
+          'percent_position' => (bool) $options['masonry_percent_position'],
         ),
       ),
     );
