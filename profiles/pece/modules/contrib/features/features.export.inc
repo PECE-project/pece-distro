@@ -332,7 +332,7 @@ function features_export_prepare($export, $module_name, $reset = FALSE, $add_dep
   }
   unset($export['php']);
 
-  $export = features_array_diff_assoc_recursive($export, $standard_info);
+  $export = drupal_array_diff_assoc_recursive($export, $standard_info);
   ksort($export);
   return array_merge($standard_info, $export);
 }
@@ -1242,6 +1242,37 @@ function features_get_default($component, $module_name = NULL, $alter = TRUE, $r
     }
   }
   return $all_defaults;
+}
+
+/**
+ * Get a list of all components of a type that are claimed by enabled modules.
+ *
+ * A new feature conflicts with another feature if the other module is enabled
+ * and claims the same feature component by specifying it in its .info file.
+ *
+ * @param string $key
+ *   Component type to filter by.
+ *
+ * @return string[][]
+ *   Format: $[$key][] = $module, where $key is the machine name of a single
+ *   exportable for the given component.
+ *   Note that there can be more than one module defining the same exportable.
+ *   This would be a “conflict”.
+ *   Example for $key='node':
+ *     $map['blog'] = ['module_defining_the_blog_content_type'];
+ */
+function features_get_claimed_components($key) {
+  $map = &drupal_static(__FUNCTION__, array());
+  if (!isset($map[$key])) {
+    $component_map = array();
+    foreach (features_get_component_map($key) as $component => $modules) {
+      if ($modules = array_filter($modules, 'module_exists')) {
+        $component_map[$component] = $modules;
+      }
+    }
+    $map[$key] = $component_map;
+  }
+  return $map[$key];
 }
 
 /**

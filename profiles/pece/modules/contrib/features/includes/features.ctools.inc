@@ -112,7 +112,7 @@ function ctools_features_export_render($module, $data) {
     ctools_include('plugins');
     $plugin_api_hook_name = ctools_plugin_api_get_hook($info['module'], $info['api']);
 
-    if (key_exists($plugin_api_hook_name, $component_exports)) {
+    if (array_key_exists($plugin_api_hook_name, $component_exports)) {
       $component_exports[$plugin_api_hook_name]['code'] .= "\n" . implode("\n", $code);
     }
     else {
@@ -210,19 +210,24 @@ function ctools_component_features_export_options($component) {
  * @see \hook_features_export()
  */
 function ctools_component_features_export($component, $data, &$export, $module_name = '') {
+  global $features_ignore_conflicts;
   // Add the actual implementing module as a dependency.
   $info = _ctools_features_get_info();
   if ($module_name !== $info[$component]['module']) {
     $export['dependencies'][$info[$component]['module']] = $info[$component]['module'];
   }
+  $map = empty($features_ignore_conflicts) ? features_get_claimed_components($component) : array();
 
   // Add the components.
   foreach ($data as $object_name) {
     if ($object = _ctools_features_export_crud_load($component, $object_name)) {
-      // If this object is provided as a default by a different module, don't
+      // If this object is provided as a default by a different feature, don't
       // export and add that module as a dependency instead.
-      if (!empty($object->export_module) && $object->export_module !== $module_name) {
-        $export['dependencies'][$object->export_module] = $object->export_module;
+      $other_features = isset($map[$object_name]) ? $map[$object_name] : array();
+      if ($other_features && !in_array($module_name, $other_features)) {
+        // Choose the first conflicting feature as dependency.
+        $other_feature = reset($other_features);
+        $export['dependencies'][$other_feature] = $other_feature;
         if (isset($export['features'][$component][$object_name])) {
           unset($export['features'][$component][$object_name]);
         }

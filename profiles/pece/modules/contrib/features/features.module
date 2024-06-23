@@ -1331,6 +1331,48 @@ function features_hook_info() {
 }
 
 /**
+ * Implements hook_ctools_plugin_api_alter().
+ *
+ * Force features default hooks to be executed after non-feature default hooks.
+ * So features can override module-provided defaults.
+ */
+function features_ctools_plugin_api_alter(&$modules, $owner, $api) {
+  // A datastructure for finding feature components based on $owner and $api.
+  features_include();
+  $components = _ctools_features_get_info();
+  $apis = array();
+  foreach ($components as $name => $c) {
+    // When writing this there was no information about when the 'api' is set or
+    // has to be set. For now we only make this work for schemas with it.
+    if (isset($c['api'])) {
+      $c['component'] = $name;
+      $apis[$c['module']][$c['api']] = $c;
+    }
+  }
+
+  if (isset($apis[$owner][$api])) {
+    // Split $modules into features and non-features based on whether the
+    // matching features component is declared in the modules .info file.
+    $component = $apis[$owner][$api]['component'];
+    $module_data = features_get_info();
+
+    $new_modules = array();
+    $features = array();
+
+    foreach ($modules as $name => $plugin) {
+      if (!empty($module_data[$name]->components) && in_array($component, $module_data[$name]->components)) {
+        $features[$name] = $plugin;
+      }
+      else {
+        $new_modules[$name] = $plugin;
+      }
+    }
+    // Non-features will be executed before features.
+    $modules = array_merge($new_modules, $features);
+  }
+}
+
+/**
  * Change vocabularies permission, from vocab id to machine name and vice versa.
  *
  * The taxonomy module builds permission machine names from auto-increment
@@ -1381,6 +1423,8 @@ function _user_features_change_term_permission(&$perm, $type = 'vid') {
  *
  * This is a version of array_diff_assoc() that supports multidimensional
  * arrays.
+ *
+ * @deprecated Use drupal_array_diff_assoc_recursive().
  *
  * @param array $array1
  *   The array to compare from.

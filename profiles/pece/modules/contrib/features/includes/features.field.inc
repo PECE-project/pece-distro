@@ -296,7 +296,7 @@ function field_base_features_rebuild($module) {
       // Create or update field.
       if (isset($existing_fields[$field['field_name']])) {
         $existing_field = $existing_fields[$field['field_name']];
-        $array_diff_result = features_array_diff_assoc_recursive($field + $existing_field, $existing_field);
+        $array_diff_result = drupal_array_diff_assoc_recursive($field + $existing_field, $existing_field);
         if (!empty($array_diff_result)) {
           try {
             field_update_field($field);
@@ -543,7 +543,7 @@ function field_features_rebuild($module) {
       $field_config = $field['field_config'];
       if (isset($existing_fields[$field_config['field_name']])) {
         $existing_field = $existing_fields[$field_config['field_name']];
-        $array_diff_result = features_array_diff_assoc_recursive($field_config + $existing_field, $existing_field);
+        $array_diff_result = drupal_array_diff_assoc_recursive($field_config + $existing_field, $existing_field);
         if (!empty($array_diff_result)) {
           try {
             field_update_field($field_config);

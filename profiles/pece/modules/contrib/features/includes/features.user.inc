@@ -258,26 +258,18 @@ function user_role_features_rebuild($module) {
  *   Format: $[$rid] = $role_name
  */
 function _user_features_get_roles($builtin = TRUE) {
-  $roles = array();
-  foreach (user_roles() as $rid => $name) {
-    switch ($rid) {
-      case DRUPAL_ANONYMOUS_RID:
-        if ($builtin) {
-          $roles[$rid] = 'anonymous user';
-        }
-        break;
+  $query = db_select('role')
+    ->fields('role', array('rid', 'name'))
+    ->orderBy('weight')
+    ->orderBy('name');
+  $roles = $query->execute()->fetchAllKeyed();
 
-      case DRUPAL_AUTHENTICATED_RID:
-        if ($builtin) {
-          $roles[$rid] = 'authenticated user';
-        }
-        break;
+  $builtin_roles = array(
+    DRUPAL_ANONYMOUS_RID => 'anonymous user',
+    DRUPAL_AUTHENTICATED_RID => 'authenticated user',
+  );
+  $roles = $builtin ? $builtin_roles + $roles : array_diff_key($roles, $builtin_roles);
 
-      default:
-        $roles[$rid] = $name;
-        break;
-    }
-  }
   return $roles;
 }
 

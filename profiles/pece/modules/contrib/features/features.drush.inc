@@ -592,7 +592,7 @@ function drush_features_export() {
     else {
       // Same logic as in _drush_features_export. Should be refactored.
       $destination = drush_get_option(array('destination'), variable_get('features_default_export_path', FEATURES_DEFAULT_EXPORT_PATH));
-      $directory = isset($directory) ? $directory : $destination . '/' . $module;
+      $directory = $destination . '/' . $module;
       drush_print(dt('Will create a new module in !dir', array('!dir' => $directory)));
       if (!drush_confirm(dt('Do you really want to continue?'))) {
         drush_die('Aborting.');

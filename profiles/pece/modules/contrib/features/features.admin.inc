@@ -657,13 +657,12 @@ function _features_export_build($feature, &$form_state) {
       $exported_components = !empty($exported_features_info[$component]) ? $exported_features_info[$component] : array();
       $new_components = !empty($new_features_info[$component]) ? $new_features_info[$component] : array();
 
-      // Find all default components that are not provided by this feature and
+      // Find all default components that are provided by other features and
       // strip them out of the possible options.
-      if ($map = features_get_default_map($component)) {
-        foreach ($map as $k => $v) {
-          if (isset($options[$k]) && (!isset($feature->name) || $v !== $feature->name)) {
-            unset($options[$k]);
-          }
+      $map = empty($features_ignore_conflicts) ? features_get_claimed_components($component) : array();
+      foreach ($map as $k => $v) {
+        if ($v && (!isset($feature->name) || !in_array($feature->name, $v))) {
+          unset($options[$k]);
         }
       }
       foreach ($options as $key => $value) {
