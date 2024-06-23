@@ -46,7 +46,7 @@ function wysiwyg_markitup_editor() {
  */
 function wysiwyg_markitup_install_note() {
   $output = '<p class="warning">' . t('Only rename the extracted folder from "latest" to "markitup", no other changes needed.') . '</p>';
-  $output .= wysiwyg_deprecation_install_note(wysiwyg_get_editor('markitup'));
+  $output .= '<p class="warning">' . t('@editor is no longer being developed and support will be dropped by Wysiwyg module after May 2022.', array('@editor' => 'markItUp')) . '</p>';
   return $output;
 }
 

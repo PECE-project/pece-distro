@@ -33,7 +33,7 @@ function wysiwyg_ckeditor_editor() {
     ),
     'install note callback' => 'wysiwyg_ckeditor_install_note',
     'deprecation message' => 'wysiwyg_ckeditor_deprecation_message',
-    'verified version range' => array('3.0', '4.17.1.f6dd30807a'),
+    'verified version range' => array('3.0', '4.23.0.7282fa87bc'),
     'migrate settings callback' => 'wysiwyg_ckeditor_migrate_settings',
     'version callback' => 'wysiwyg_ckeditor_version',
     'themes callback' => 'wysiwyg_ckeditor_themes',
@@ -245,6 +245,8 @@ function wysiwyg_ckeditor_settings_form(&$form, &$form_state) {
     'simple_source_formatting' => FALSE,
     'toolbarLocation' => 'top',
     'allowedContent' => TRUE,
+    'linkShowAdvancedTab' => TRUE,
+    'linkShowTargetTab' => TRUE,
   );
 
   if (version_compare($installed_version, '3.1.0', '>=')) {
@@ -421,6 +423,31 @@ function wysiwyg_ckeditor_settings_form(&$form, &$form_state) {
     '#maxlength' => 250,
     '#description' => t('Comma separated list of HTML block formats. Possible values: <code>@format-list</code>.', array('@format-list' => 'p,h1,h2,h3,h4,h5,h6,div,blockquote,address,pre,code,dt,dd and other block elements')) . ' ' . t('Uses the <a href="@url">@setting</a> setting internally.', array('@setting' => 'block_formats', '@url' => url('http://docs.ckeditor.com/#!/api/CKEDITOR.config-cfg-format_tags'))),
   );
+
+  $form['link'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Link Plugin'),
+    '#description' => t('Settings for Link plugin, to show or not show Advanced and Target Tabs'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+    '#group' => 'advanced',
+  );
+
+  $form['link']['linkShowAdvancedTab'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Show advanced tab'),
+    '#default_value' => !empty($settings['linkShowAdvancedTab']),
+    '#return_value' => 1,
+    '#description' => t('If checked, shows Advanced Tab on Link.'),
+  );
+
+  $form['link']['linkShowTargetTab'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Show target tab'),
+    '#default_value' => !empty($settings['linkShowTargetTab']),
+    '#return_value' => 1,
+    '#description' => t('If checked, shows Target Tab on Link.'),
+  );
 }
 
 /**
@@ -587,6 +614,8 @@ function wysiwyg_ckeditor_settings($editor, $config, $theme) {
     'pasteFromWordRemoveStyles',
     'simple_source_formatting',
     'toolbarLocation',
+    'linkShowAdvancedTab',
+    'linkShowTargetTab',
   );
   foreach ($check_if_set as $setting_name) {
     if (isset($config[$setting_name])) {
