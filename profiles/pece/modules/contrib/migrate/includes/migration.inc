@@ -242,6 +242,8 @@ abstract class Migration extends MigrationBase {
    */
   protected $queuedMessages = array();
 
+  protected $subfieldDelimiter = ':';
+
   /**
    * General initialization of a Migration object.
    */
@@ -749,33 +751,17 @@ abstract class Migration extends MigrationBase {
         $ids = $this->destination->import($this->destinationValues, $this->sourceValues);
         migrate_instrument_stop('destination import');
         if ($ids) {
-          $this->map->saveIDMapping($this->sourceValues, $ids,
-            $this->needsUpdate, $this->rollbackAction,
-            $data_row->migrate_map_hash);
-          $this->successes_since_feedback++;
-          $this->total_successes++;
+          $this->onSuccess($data_row, $ids);
         }
         else {
-          $this->map->saveIDMapping($this->sourceValues, array(),
-            MigrateMap::STATUS_FAILED, $this->rollbackAction,
-            NULL);
-          if ($this->map->messageCount() == 0) {
-            $message = t('New object was not saved, no error provided');
-            $this->saveMessage($message);
-            self::displayMessage($message);
-          }
+          $this->onEmptyDestination($data_row, $ids);
         }
       } catch (MigrateException $e) {
-        $this->map->saveIDMapping($this->sourceValues, array(),
-          $e->getStatus(), $this->rollbackAction, $data_row->migrate_map_hash);
-        $this->saveMessage($e->getMessage(), $e->getLevel());
-        self::displayMessage($e->getMessage());
+        $this->onMigrateException($e, $data_row);
       } catch (Exception $e) {
-        $this->map->saveIDMapping($this->sourceValues, array(),
-          MigrateMap::STATUS_FAILED, $this->rollbackAction,
-          NULL);
-        $this->handleException($e);
+        $this->onException($e);
       }
+
       $this->total_processed++;
       $this->processed_since_feedback++;
       if ($this->highwaterField) {
@@ -819,6 +805,68 @@ abstract class Migration extends MigrationBase {
     $this->progressMessage($return);
 
     return $return;
+  }
+
+  /**
+   * React when the migration has been successful.
+   *
+   * @param object $data_row
+   *   Data.
+   * @param array $ids
+   *   Destination ids.
+   */
+  protected function onSuccess($data_row, $ids) {
+    $this->map->saveIDMapping($this->sourceValues, $ids,
+      $this->needsUpdate, $this->rollbackAction,
+      $data_row->migrate_map_hash);
+    $this->successes_since_feedback++;
+    $this->total_successes++;
+  }
+
+  /**
+   * React when migration didn't failed but destination ids are empty.
+   *
+   * @param object $data_row
+   *   Data.
+   * @param array $ids
+   *   Destination ids.
+   */
+  protected function onEmptyDestination($data_row, $ids) {
+    $this->map->saveIDMapping($this->sourceValues, array(),
+      MigrateMap::STATUS_FAILED, $this->rollbackAction,
+      NULL);
+    if ($this->map->messageCount() == 0) {
+      $message = t('New object was not saved, no error provided');
+      $this->saveMessage($message);
+      self::displayMessage($message);
+    }
+  }
+
+  /**
+   * React when there is a migrate exception
+   *
+   * @param \MigrateException $e
+   *   Exception.
+   *
+   */
+  protected function onMigrateException(\MigrateException $e, $data_row) {
+    $this->map->saveIDMapping($this->sourceValues, array(),
+      $e->getStatus(), $this->rollbackAction, $data_row->migrate_map_hash);
+    $this->saveMessage($e->getMessage(), $e->getLevel());
+    self::displayMessage($e->getMessage());
+  }
+
+  /**
+   * React when there is an exception
+   *
+   * @param \Exception $e
+   *   Exception.
+   */
+  protected function onException(\Exception $e) {
+    $this->map->saveIDMapping($this->sourceValues, array(),
+      MigrateMap::STATUS_FAILED, $this->rollbackAction,
+      NULL);
+    $this->handleException($e);
   }
 
   /**
@@ -1328,7 +1376,7 @@ abstract class Migration extends MigrationBase {
 
         // Are we dealing with the primary value of the destination field, or a
         // subfield?
-        $destination = explode(':', $destination);
+        $destination = explode($this->subfieldDelimiter, $destination);
         // Count how many levels of fields are in the mapping. We'll use the
         // last one.
         $destination_count = count($destination);
@@ -1358,7 +1406,11 @@ abstract class Migration extends MigrationBase {
           elseif (!is_array($this->destinationValues->{$destination_field})) {
             $this->destinationValues->{$destination_field} = array($this->destinationValues->{$destination_field});
           }
-          if (!is_array($this->destinationValues->{$destination_field}['arguments'][$destination[1]])) {
+          // Additional check for case when first subfield doesn't exist.
+          if (!isset($this->destinationValues->{$destination_field}['arguments'][$destination[1]])) {
+            $this->destinationValues->{$destination_field}['arguments'][$destination[1]] = array();
+          }
+          elseif (!is_array($this->destinationValues->{$destination_field}['arguments'][$destination[1]])) {
             // Convert first subfield level to an array so we can add to it.
             $this->destinationValues->{$destination_field}['arguments'][$destination[1]] = array($this->destinationValues->{$destination_field}['arguments'][$destination[1]]);
           }
@@ -1449,7 +1501,7 @@ abstract class Migration extends MigrationBase {
         }
       }
       // Occasionally $source_key comes through with an empty string.
-      $sanity_check = array_filter($source_key);
+      $sanity_check = array_filter($source_key, 'strlen');
       if ($continue || empty($source_key) || empty($sanity_check)) {
         continue;
       }

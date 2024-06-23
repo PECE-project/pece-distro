@@ -995,6 +995,7 @@ class MigrateXMLReader implements Iterator {
   /**
    * Implementation of Iterator::rewind().
    */
+  #[\ReturnTypeWillChange]
   public function rewind() {
     // (Re)open the provided URL.
     $this->reader->close();
@@ -1016,6 +1017,7 @@ class MigrateXMLReader implements Iterator {
   /**
    * Implementation of Iterator::next().
    */
+  #[\ReturnTypeWillChange]
   public function next() {
     migrate_instrument_start('MigrateXMLReader::next');
     $this->currentElement = $this->currentId = NULL;
@@ -1091,6 +1093,7 @@ class MigrateXMLReader implements Iterator {
    * @return null|SimpleXMLElement
    *   Current item
    */
+  #[\ReturnTypeWillChange]
   public function current() {
     return $this->currentElement;
   }
@@ -1101,6 +1104,7 @@ class MigrateXMLReader implements Iterator {
    * @return null|string
    *   Current key
    */
+  #[\ReturnTypeWillChange]
   public function key() {
     return $this->currentId;
   }
@@ -1111,6 +1115,7 @@ class MigrateXMLReader implements Iterator {
    * @return bool
    *   Indicates if current element is valid
    */
+  #[\ReturnTypeWillChange]
   public function valid() {
     return $this->currentElement instanceof SimpleXMLElement;
   }

@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Define a MigrateSource for importing from Drupal connections
+ * Define a MigrateSource for importing from Drupal connections.
  */
 
 /**
@@ -11,7 +11,7 @@
 class MigrateSourceSQL extends MigrateSource {
 
   /**
-   * The SQL query objects from which to obtain data, and counts of data
+   * The SQL query objects from which to obtain data, and counts of data.
    *
    * @var SelectQueryInterface
    */
@@ -37,7 +37,7 @@ class MigrateSourceSQL extends MigrateSource {
   protected $result;
 
   /**
-   * Number of eligible rows processed so far (used for itemlimit checking)
+   * Number of eligible rows processed so far (used for itemlimit checking).
    *
    * @var int
    */
@@ -74,8 +74,8 @@ class MigrateSourceSQL extends MigrateSource {
    */
   protected $mapJoinable = FALSE;
 
-  // Dynamically set whether the map is joinable - not really for production use,
-  // this is primarily to support simpletests
+  // Dynamically set whether the map is joinable - not really for production
+  // use, this is primarily to support simpletests.
   public function setMapJoinable($map_joinable) {
     $this->mapJoinable = $map_joinable;
   }
@@ -206,13 +206,14 @@ class MigrateSourceSQL extends MigrateSource {
     $queryFields = $this->query->getFields();
 
     if ($queryFields) {
-      // Not much we can do in terms of describing the fields without manual intervention
+      // Not much we can do in terms of describing the fields
+      // without manual intervention.
       foreach ($queryFields as $field_name => $field_info) {
         $fields[$field_name] = $field_info['table'] . '.' . $field_info['field'];
       }
     }
     else {
-      // Detect available fields
+      // Detect available fields.
       $detection_query = clone $this->query;
       $result = $detection_query->range(0, 1)->execute();
       $row = $result->fetchAssoc();
@@ -287,9 +288,9 @@ class MigrateSourceSQL extends MigrateSource {
     }
 
     // The rules for determining what conditions to add to the query are as
-    // follows (applying first applicable rule)
+    // follows (applying first applicable rule).
     // 1. If idlist is provided, then only process items in that list (AND key
-    //    IN (idlist)). Only applicable with single-value keys.
+    // IN (idlist)). Only applicable with single-value keys.
     if ($this->idList) {
       $simple_ids = array();
       $compound_ids = array();
@@ -305,7 +306,8 @@ class MigrateSourceSQL extends MigrateSource {
         $compound_ids[] = explode($this->multikeySeparator, $id);
       }
 
-      // Check for compunded ids. If present add them with subsequent OR statements.
+      // Check for compunded ids. If present add them with subsequent
+      // OR statements.
       if (!empty($compound_ids)) {
         $condition = db_or();
         if (!empty($simple_ids)) {
@@ -329,13 +331,13 @@ class MigrateSourceSQL extends MigrateSource {
     }
     else {
       // 2. If the map is joinable, join it. We will want to accept all rows
-      //    which are either not in the map, or marked in the map as NEEDS_UPDATE.
-      //    Note that if highwater fields are in play, we want to accept all rows
-      //    above the highwater mark in addition to those selected by the map
-      //    conditions, so we need to OR them together (but AND with any existing
-      //    conditions in the query). So, ultimately the SQL condition will look
-      //    like (original conditions) AND (map IS NULL OR map needs update
-      //      OR above highwater).
+      // which are either not in the map, or marked in the map as NEEDS_UPDATE.
+      // Note that if highwater fields are in play, we want to accept all rows
+      // above the highwater mark in addition to those selected by the map
+      // conditions, so we need to OR them together (but AND with any existing
+      // conditions in the query). So, ultimately the SQL condition will look
+      // like (original conditions) AND (map IS NULL OR map needs update
+      // OR above highwater).
       $conditions = db_or();
       $condition_added = FALSE;
       if ($this->mapJoinable) {
@@ -377,7 +379,7 @@ class MigrateSourceSQL extends MigrateSource {
         $this->query->addField($alias, 'needs_update', 'migrate_map_needs_update');
       }
       // 3. If we are using highwater marks, also include rows above the mark.
-      //    But, include all rows if the highwater mark is not set.
+      // But, include all rows if the highwater mark is not set.
       if (isset($this->highwaterField['name']) && $this->activeMigration->getHighwater() !== '') {
         // But, if there are any existing items marked as needing update which
         // fall below the highwater mark, and map_joinable is FALSE, those
@@ -399,8 +401,15 @@ class MigrateSourceSQL extends MigrateSource {
           else {
             $highwater = $this->highwaterField['name'];
           }
-          $conditions->condition($highwater, $this->activeMigration->getHighwater(), '>');
-          $condition_added = TRUE;
+          // If highwaterField is an aggregate function add
+          // as a having condition.
+          if (isset($this->highwaterField['aggregate'])) {
+            $this->query->havingCondition($highwater, $this->activeMigration->getHighwater(), '>');
+          }
+          else {
+            $conditions->condition($highwater, $this->activeMigration->getHighwater(), '>');
+            $condition_added = TRUE;
+          }
         }
       }
       if ($condition_added) {
@@ -429,8 +438,8 @@ class MigrateSourceSQL extends MigrateSource {
   public function getNextRow() {
     $row = $this->result->fetchObject();
 
-    // We might be out of data entirely, or just out of data in the current batch.
-    // Attempt to fetch the next batch and see.
+    // We might be out of data entirely, or just out of data in the current
+    // batch. Attempt to fetch the next batch and see.
     if (!is_object($row) && $this->batchSize > 0) {
       $this->getNextBatch();
       $row = $this->result->fetchObject();

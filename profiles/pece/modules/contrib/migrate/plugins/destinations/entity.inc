@@ -199,6 +199,9 @@ abstract class MigrateDestinationEntity extends MigrateDestination {
       foreach ($e->errors as $field_name => $error_list) {
         if (is_array($error_list)) {
           foreach ($error_list as $index => $error) {
+            // Flatten the array to make sure the "message" field is at the top
+            // level.
+            $error = self::array_flatten($error);
             $message = $error['message'];
             $migration->saveMessage(t('Field validation error for !field_name: !message',
               array('!field_name' => $field_name, '!message' => $message)));
@@ -206,5 +209,31 @@ abstract class MigrateDestinationEntity extends MigrateDestination {
         }
       }
     }
+  }
+
+  /**
+   * Flattens an array of allowed values.
+   *
+   * Duplicates options_array_flatten() to avoid a dependency on the core
+   * options module.
+   *
+   * @param $array
+   *   A single or multidimensional array.
+   * @return
+   *   A flattened array.
+   */
+  static public function array_flatten($array) {
+    $result = array();
+    if (is_array($array)) {
+      foreach ($array as $key => $value) {
+        if (is_array($value)) {
+          $result += self::array_flatten($value);
+        }
+        else {
+          $result[$key] = $value;
+        }
+      }
+    }
+    return $result;
   }
 }

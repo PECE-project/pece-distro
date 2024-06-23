@@ -154,7 +154,8 @@ class MigrateItemJSON extends MigrateItem {
    * @param mixed $id
    */
   protected function constructItemUrl($id) {
-    return preg_replace(array_fill(0, count($id), '/:id/'), $id, $this->itemUrl, 1);
+    $count = is_array($id) ? count($id) : 1;
+    return preg_replace(array_fill(0, $count, '/:id/'), $id, $this->itemUrl, 1);
   }
 
   /**
@@ -228,6 +229,7 @@ class MigrateJSONReader implements Iterator {
    *
    * @return void
    */
+  #[\ReturnTypeWillChange]
   public function rewind() {
     // Close any open file - we open the files lazily in next().
     if ($this->fileHandle) {
@@ -261,6 +263,7 @@ class MigrateJSONReader implements Iterator {
    *
    * @return void
    */
+  #[\ReturnTypeWillChange]
   public function next() {
     migrate_instrument_start('MigrateJSONReader::next');
 
@@ -371,6 +374,7 @@ class MigrateJSONReader implements Iterator {
    *
    * @return null|object
    */
+  #[\ReturnTypeWillChange]
   public function current() {
     return $this->currentElement;
   }
@@ -380,6 +384,7 @@ class MigrateJSONReader implements Iterator {
    *
    * @return null|string
    */
+  #[\ReturnTypeWillChange]
   public function key() {
     return $this->currentId;
   }
@@ -389,6 +394,7 @@ class MigrateJSONReader implements Iterator {
    *
    * @return bool
    */
+  #[\ReturnTypeWillChange]
   public function valid() {
     return !empty($this->currentElement);
   }
@@ -477,7 +483,13 @@ class MigrateSourceJSON extends MigrateSource {
     }
 
     $this->sourceUrls = $urls;
-    $this->activeUrl = NULL;
+
+    $active_url = variable_get('migrate_source_json_active_url', NULL);
+    if (isset($active_url)) {
+      $active_url--;
+    }
+    $this->activeUrl = $active_url;
+
     $this->readerClass = $reader_class;
     $this->fields = $fields;
   }
@@ -538,7 +550,11 @@ class MigrateSourceJSON extends MigrateSource {
     // Set the reader back to the beginning of the file (positioned to the
     // first matching element), then apply our logic to make sure we have the
     // first element fulfilling our logic (idlist/map/prepareRow()).
-    $this->activeUrl = NULL;
+    $active_url = variable_get('migrate_source_json_active_url', NULL);
+    if (isset($active_url)) {
+      $active_url--;
+    }
+    $this->activeUrl = $active_url;
     if ($this->reader) {
       $this->reader->rewind();
       $this->reader = NULL;
@@ -598,6 +614,8 @@ class MigrateSourceJSON extends MigrateSource {
         $this->activeUrl = $this->activeUrl + 1;
       }
 
+      variable_set('migrate_source_json_active_url', $this->activeUrl);
+
       $this->reader = new $this->readerClass($this->sourceUrls[$this->activeUrl], $this->idField);
       $this->reader->rewind();
 
@@ -606,6 +624,10 @@ class MigrateSourceJSON extends MigrateSource {
         $status = TRUE;
         break;
       }
+    }
+
+    if ((count($this->sourceUrls)-1) == $this->activeUrl) {
+      variable_del('migrate_source_json_active_url');
     }
 
     migrate_instrument_stop('MigrateSourceJSON::nextSource');

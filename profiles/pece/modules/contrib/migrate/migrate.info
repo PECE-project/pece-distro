@@ -39,7 +39,7 @@ files[] = plugins/sources/mongodb.inc
 files[] = plugins/sources/multiitems.inc
 files[] = plugins/sources/sql.inc
 files[] = plugins/sources/sqlmap.inc
-files[] = plugins/sources/mssql.inc
+files[] = plugins/sources/sqlsrv.inc
 files[] = plugins/sources/oracle.inc
 files[] = plugins/sources/spreadsheet.inc
 files[] = plugins/sources/xml.inc
@@ -51,8 +51,8 @@ files[] = tests/plugins/destinations/term.test
 files[] = tests/plugins/destinations/user.test
 files[] = tests/plugins/sources/xml.test
 
-; Information added by Drupal.org packaging script on 2018-06-10
-version = "7.x-2.11"
+; Information added by Drupal.org packaging script on 2023-01-15
+version = "7.x-2.12"
 core = "7.x"
 project = "migrate"
-datestamp = "1528674486"
+datestamp = "1673814412"

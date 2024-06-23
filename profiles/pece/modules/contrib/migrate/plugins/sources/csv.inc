@@ -152,9 +152,9 @@ class MigrateListCSV extends MigrateList {
       if (!$this->validResource()) {
         return $count;
       }
-      // Skip all but the last header
+      // Skip header rows
       for ($i = 0; $i < $this->headerRows; $i++) {
-        fgets($this->csvHandle);
+        $this->getNextLine();
       }
       while ($this->getNextLine()) {
         $count++;
@@ -218,6 +218,7 @@ class MigrateListCSV extends MigrateList {
  * If the CSV file contains non-ASCII characters, make sure it includes a
  * UTF BOM (Byte Order Marker) so they are interpreted correctly.
  */
+#[AllowDynamicProperties]
 class MigrateSourceCSV extends MigrateSource {
 
   /**

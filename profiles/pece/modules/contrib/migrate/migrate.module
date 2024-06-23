@@ -191,17 +191,40 @@ function migrate_handler_invoke_all($destination, $method) {
  * @param $method
  *  Handler method to call (defaults to prepare()).
  */
-function migrate_field_handler_invoke_all($entity, array $field_info,
-                                          array $instance, array $values, $method = 'prepare') {
+function migrate_field_handler_invoke_all($entity, array $field_info, array $instance, array $values, $method = 'prepare') {
+  static $types_handled = array();
+  static $methods_handled = array();
+  static $disabled = null;
   $return = array();
   $type = $field_info['type'];
-  $class_list = _migrate_class_list('MigrateFieldHandler');
-  $disabled = unserialize(variable_get('migrate_disabled_handlers',
-    serialize(array())));
+  static $class_list = null;
+  if (!$class_list) {
+    $class_list = _migrate_class_list('MigrateFieldHandler');
+  }
+  // No need to do this unserialize/variable_get/serialize so often,
+  // it never changes.
+  if(!is_array($disabled)){
+    $disabled = unserialize(variable_get('migrate_disabled_handlers',
+      serialize(array())));
+  }
+  // This function is called a lot. Rather than determine if the field type is
+  // handled once for every record, the value should be determined once per
+  // execution.
+  // The same can go for whether the handler/method pair exists
+  if(!isset($types_handled[$type])){
+    foreach($class_list as $class_name => $handler) {
+      $types_handled[$type][$class_name] = $handler->handlesType($type);
+    }
+  }
+  if(!isset($methods_handled[$method])){
+    foreach($class_list as $class_name => $handler) {
+      $methods_handled[$method][$class_name] = method_exists($handler, $method);
+    }
+  }
+
   $handler_called = FALSE;
   foreach ($class_list as $class_name => $handler) {
-    if (!in_array($class_name, $disabled) && $handler->handlesType($type)
-      && method_exists($handler, $method)) {
+    if (!in_array($class_name, $disabled) && $types_handled[$type][$class_name] && $methods_handled[$method][$class_name]) {
       migrate_instrument_start($class_name . '->' . $method);
       $result = call_user_func_array(array($handler, $method),
         array($entity, $field_info, $instance, $values));

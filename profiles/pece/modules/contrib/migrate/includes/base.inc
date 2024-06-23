@@ -806,10 +806,11 @@ abstract class MigrationBase {
       ->condition('machine_name', $this->machineName)
       ->isNotNull('endtime')
       ->orderBy('endtime', 'DESC')
+      ->range(0, 1)
       ->execute()
       ->fetchField();
     if ($last_imported) {
-      $last_imported = date('Y-m-d H:i:s', $last_imported / 1000);
+      $last_imported = date('Y-m-d H:i:s', (int) ($last_imported / 1000));
     }
     else {
       $last_imported = '';
@@ -1050,6 +1051,17 @@ abstract class MigrationBase {
       $this->processing = FALSE;
     }
     self::$currentMigration = NULL;
+
+    // If we're disabling any hooks, reset the static module_implements cache so
+    // it is rebuilt again and the specified hooks removed by our
+    // hook_module_implements_alter() is recollected. By setting #write_cache to
+    // FALSE, we ensure that our munged version of the hooks array does not get
+    // written to the persistent cache and interfere with other Drupal processes.
+    if (!empty($this->disableHooks)) {
+      $implementations = &drupal_static('module_implements');
+      $implementations = array();
+      $implementations['#write_cache'] = FALSE;
+    }
   }
 
   /**

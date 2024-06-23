@@ -226,6 +226,7 @@ abstract class MigrateSource implements Iterator {
    * Implementation of Iterator::current() - called when entering a loop
    * iteration, returning the current row
    */
+  #[\ReturnTypeWillChange]
   public function current() {
     return $this->currentRow;
   }
@@ -236,6 +237,7 @@ abstract class MigrateSource implements Iterator {
    * serialize to fulfill the requirement, but using getCurrentKey() is
    * preferable.
    */
+  #[\ReturnTypeWillChange]
   public function key() {
     return serialize($this->currentKey);
   }
@@ -244,6 +246,7 @@ abstract class MigrateSource implements Iterator {
    * Implementation of Iterator::valid() - called at the top of the loop,
    * returning TRUE to process the loop and FALSE to terminate it
    */
+  #[\ReturnTypeWillChange]
   public function valid() {
     return !is_null($this->currentRow);
   }
@@ -253,6 +256,7 @@ abstract class MigrateSource implements Iterator {
    * implement performRewind() to do any class-specific setup for iterating
    * source records.
    */
+  #[\ReturnTypeWillChange]
   public function rewind() {
     $this->activeMigration = Migration::currentMigration();
     $this->activeMap = $this->activeMigration->getMap();
@@ -278,6 +282,7 @@ abstract class MigrateSource implements Iterator {
    * Implementation of Iterator::next() - subclasses of MigrateSource should
    * implement getNextRow() to retrieve the next valid source rocord to process.
    */
+  #[\ReturnTypeWillChange]
   public function next() {
     $this->currentKey = NULL;
     $this->currentRow = NULL;

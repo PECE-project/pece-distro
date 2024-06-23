@@ -518,7 +518,9 @@ function migrate_ui_migrate_submit($form, &$form_state) {
       $log_suffix = '.rollback.log';
     }
     $migrations = implode(',', $drush_arguments);
-    $drush_command = "$drush_path $command $migrations --user=$uid --uri=$uri " .
+    // If on Acquia, call required shell script to add environment variables.
+    $drush_command = isset($_ENV['AH_SITE_ENVIRONMENT']) ? "/mnt/users/{$_ENV['AH_SITE_GROUP']}/{$_ENV['AH_SITE_ENVIRONMENT']}.shell " : '';
+    $drush_command .= "$drush_path $command $migrations --user=$uid --uri=$uri " .
       '--root=' . DRUPAL_ROOT;
     if ($force) {
       $drush_command .= ' --force';
@@ -563,7 +565,7 @@ function migrate_ui_migrate_submit($form, &$form_state) {
  * @param $context
  *  Batch API context structure
  */
-function migrate_ui_batch($operation, $machine_name, $limit, $force = FALSE, &$context) {
+function migrate_ui_batch($operation, $machine_name, $limit, $force, &$context) {
   // If we got a stop message, skip everything else
   if (isset($context['results']['stopped'])) {
     $context['finished'] = 1;
@@ -1810,7 +1812,9 @@ function migrate_ui_configure_form($form, &$form_state) {
     // Try running a drush status command to verify it's properly configured.
     $uri = $GLOBALS['base_url'];
     $uid = $GLOBALS['user']->uid;
-    $command = "$drush_path status --user=$uid --uri=$uri --root=" . DRUPAL_ROOT;
+    // If on Acquia, call required shell script to add environment variables.
+    $command = isset($_ENV['AH_SITE_ENVIRONMENT']) ? "/mnt/users/{$_ENV['AH_SITE_GROUP']}/{$_ENV['AH_SITE_ENVIRONMENT']}.shell " : '';
+    $command .= "$drush_path status --user=$uid --uri=$uri --root=" . DRUPAL_ROOT;
     exec($command, $output, $status);
     if ($status == 0) {
       $version = '';

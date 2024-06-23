@@ -438,6 +438,7 @@ class MigrateFileUri extends MigrateFile {
       $filename = str_replace('%3A', ':', $filename);
       $filename = str_replace('%3F', '?', $filename);
       $filename = str_replace('%26', '&', $filename);
+      $filename = str_replace('%40', '@', $filename);
     }
     return $filename;
   }
@@ -463,7 +464,8 @@ class MigrateFileUri extends MigrateFile {
     }
 
     if (empty($this->destinationFile)) {
-      $this->destinationFile = basename($this->sourcePath);
+      $path = explode('?', $this->sourcePath);
+      $this->destinationFile = basename($path[0]);
     }
 
     // MigrateFile has most of the smarts - the key is that it will call back

@@ -28,7 +28,7 @@ class MigrateFieldsEntityHandler extends MigrateDestinationHandler {
         $fields[$machine_name] = $instance['label'];
       }
 
-      // Look for subfields
+      // Look for subfields.
       $class_list = _migrate_class_list('MigrateFieldHandler');
       $disabled = unserialize(variable_get('migrate_disabled_handlers', serialize(array())));
       $fields_found = FALSE;
@@ -63,7 +63,8 @@ class MigrateFieldsEntityHandler extends MigrateDestinationHandler {
 
   public function prepare($entity, stdClass $row) {
     migrate_instrument_start('MigrateDestinationEntity->prepareFields');
-    // Look for Field API fields attached to this destination and handle appropriately
+    // Look for Field API fields attached to this destination
+    // and handle appropriately.
     $migration = Migration::currentMigration();
     $destination = $migration->getDestination();
     $entity_type = $destination->getEntityType();
@@ -71,9 +72,9 @@ class MigrateFieldsEntityHandler extends MigrateDestinationHandler {
     $instances = field_info_instances($entity_type, $bundle);
     foreach ($instances as $machine_name => $instance) {
       if (property_exists($entity, $machine_name)) {
-        // Normalize to an array
+        // Normalize to an array.
         if (!is_array($entity->{$machine_name})) {
-          $entity->{$machine_name} = array($entity->{$machine_name});
+          $entity->{$machine_name} = $entity->$machine_name ? array($entity->{$machine_name}) : array();
         }
         $field_info = field_info_field($machine_name);
         $entity->{$machine_name} = migrate_field_handler_invoke_all($entity, $field_info,
@@ -85,7 +86,8 @@ class MigrateFieldsEntityHandler extends MigrateDestinationHandler {
 
   public function complete($entity, stdClass $row) {
     migrate_instrument_start('MigrateDestinationEntity->completeFields');
-    // Look for Field API fields attached to this destination and handle appropriately
+    // Look for Field API fields attached to this destination
+    // and handle appropriately.
     $migration = Migration::currentMigration();
     $destination = $migration->getDestination();
     $entity_type = $destination->getEntityType();
@@ -93,7 +95,7 @@ class MigrateFieldsEntityHandler extends MigrateDestinationHandler {
     $instances = field_info_instances($entity_type, $bundle);
     foreach ($instances as $machine_name => $instance) {
       if (property_exists($entity, $machine_name)) {
-        // Normalize to an array
+        // Normalize to an array.
         if (!is_array($entity->{$machine_name})) {
           $entity->{$machine_name} = array($entity->{$machine_name});
         }
@@ -108,20 +110,21 @@ class MigrateFieldsEntityHandler extends MigrateDestinationHandler {
 
 abstract class MigrateFieldHandler extends MigrateHandler {
 
-  // Derived classes are expected to implement one or both of the prepare/complete
-  // handlers.
-
-  // abstract public function prepare($entity, array $field_info, array $instance, array $values);
-  // abstract public function complete($entity, array $field_info, array $instance, array $values);
+  // Derived classes are expected to implement one
+  // or both of the prepare/complete handlers.
+  // Abstract public function
+  // prepare($entity, array $field_info, array $instance, array $values).
+  // Abstract public function
+  // complete($entity, array $field_info, array $instance, array $values).
 
   /**
-   * Determine the language of the field
+   * Determine the language of the field.
    *
    * @param $entity
    * @param $field_info
    * @param $arguments
    *
-   * @return string language code
+   * @return string language code.
    */
   function getFieldLanguage($entity, $field_info, array $arguments) {
     $migration = Migration::currentMigration();
@@ -492,6 +495,7 @@ class MigrateTaxonomyTermReferenceFieldHandler extends MigrateFieldHandler {
         array('@doc' => 'http://drupal.org/node/1224042#create_term')),
       'ignore_case' => t('Option: <a href="@doc">Set to TRUE to ignore case differences between source data and existing term names</a>',
         array('@doc' => 'http://drupal.org/node/1224042#ignore_case')),
+      'not_empty' => t('Option: Set to TRUE to ignore empty terms to get created in case of multiple term names per row.'),
     );
   }
 
@@ -516,7 +520,7 @@ class MigrateTaxonomyTermReferenceFieldHandler extends MigrateFieldHandler {
       $vocab_name = $field_info['settings']['allowed_values'][0]['vocabulary'];
       $names = taxonomy_vocabulary_get_names();
 
-      // Get the vocabulary for this term
+      // Get the vocabulary for this term.
       if (isset($field_info['settings']['allowed_values'][0]['vid'])) {
         $vid = $field_info['settings']['allowed_values'][0]['vid'];
       }
@@ -524,10 +528,22 @@ class MigrateTaxonomyTermReferenceFieldHandler extends MigrateFieldHandler {
         $vid = $names[$vocab_name]->vid;
       }
 
-      // Remove leading and trailing spaces in term names
+      // Remove leading and trailing spaces in term names.
       $values = array_map('trim', $values);
 
-      // Cannot use taxonomy_term_load_multiple() since we have an array of names.
+      // Remove empty array values from $values array.
+      if (!empty($arguments['not_empty'])) {
+        $terms = array();
+        foreach ($values as $term) {
+          if (!empty($term)) {
+            $terms[] = $term;
+          }
+          $values = $terms;
+        }
+      }
+
+      // Cannot use taxonomy_term_load_multiple()
+      // since we have an array of names.
       // It wants a singular value. This query may return case-insensitive
       // matches.
       $existing_terms = db_select('taxonomy_term_data', 'td')
@@ -669,7 +685,7 @@ abstract class MigrateFileFieldBaseHandler extends MigrateFieldHandler {
     $migration = Migration::currentMigration();
 
     // One can override the source class via CLI or drushrc.php (the
-    // option is named file_function for historical reasons)
+    // option is named file_function for historical reasons).
     if ($migration->getOption('file_function')) {
       $file_class = $migration->getOption('file_function');
     }
@@ -680,8 +696,9 @@ abstract class MigrateFileFieldBaseHandler extends MigrateFieldHandler {
       $file_class = 'MigrateFileUri';
     }
 
-    // If a destination directory (relative to the Drupal public files directory)
-    // is not explicitly provided, use the default for the field.
+    // If a destination directory
+    // (relative to the Drupal public files directory) is not
+    // explicitly provided, use the default for the field.
     if (empty($arguments['destination_dir'])) {
       $arguments['destination_dir'] = $this->destinationDir($field_info, $instance);
     }
@@ -693,10 +710,10 @@ abstract class MigrateFileFieldBaseHandler extends MigrateFieldHandler {
     // etc.
     foreach ($values as $delta => $value) {
       if ($value) {
-        // Handle potentially multiple arguments
+        // Handle potentially multiple arguments.
         $instance_arguments = array();
         foreach ($arguments as $key => $argument) {
-          // For a scalar argument, pass it directly
+          // For a scalar argument, pass it directly.
           if (!is_array($argument)) {
             $instance_arguments[$key] = $argument;
           }
@@ -717,9 +734,9 @@ abstract class MigrateFileFieldBaseHandler extends MigrateFieldHandler {
           }
         }
         // If the parent entity doesn't have an explicit uid, give ownership
-        // to the anonymous account
+        // to the anonymous account.
         $owner = isset($entity->uid) ? $entity->uid : 0;
-        // Call the MigrateFileInterface implementation to do the real work
+        // Call the MigrateFileInterface implementation to do the real work.
         $source = new $file_class($instance_arguments);
         $file = $source->processFile($value, $owner);
 
