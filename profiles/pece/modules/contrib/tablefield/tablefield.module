@@ -1001,7 +1001,7 @@ function tablefield_field_formatter_view($entity_type, $entity, $field, $instanc
               if ($settings['xml']) {
                 switch ($settings['xml_safe']) {
                   case 'htmlspecialchars':
-                    $value = str_replace(array("\r", "\n"), '', htmlspecialchars($value));
+                    $value = str_replace(array("\r", "\n"), '', htmlspecialchars($value, ENT_COMPAT));
                     break;
 
                   case 'cdata':
@@ -2574,7 +2574,7 @@ function array_to_xml($data, &$xml_data) {
       array_to_xml($value, $subnode);
     }
     else {
-      $xml_data->addChild("$key", htmlspecialchars("$value"));
+      $xml_data->addChild("$key", htmlspecialchars("$value", ENT_COMPAT));
     }
   }
 }
