@@ -5,6 +5,29 @@ System updates.
 Upgrades
 ---
 - Upgrade Drupal core version to v7.101
+- Upgrade Panopoly Admin version to v1.94
+- Upgrade Panopoly Core version to v1.94
+- Upgrade Panopoly Images version to v1.94
+- Upgrade Panopoly Magic version to v1.94
+- Upgrade Panopoly Pages version to v1.94
+- Upgrade Panopoly Test version to v1.94
+- Upgrade Panopoly Theme version to v1.94
+- Upgrade Panopoly Users version to v1.94
+- Upgrade Panopoly Widgets version to v1.94
+- Upgrade Panopoly WYSIWYG version to v1.94
+- Upgrade Ctools module version to v2.21
+- Upgrade Services module version to v3.29
+- Upgrade Masonry module version to v3.0
+- Upgrade Field Group module version to v1.8
+- Upgrade Features module version to v2.15
+- Upgrade Biblio module version to v1.6
+- Upgrade Admin Menu module version to v3.0-rc7
+- Upgrade xAutolad module version to v5.9
+- Upgrade Entity module version to v1.10
+- Upgrade File Entity module version to v2.38
+- Upgrade Facet API module version to v1.9
+- Upgrade Migrate module version to v2.12
+- Upgrade Migrate D2D module version to v2.1
 
 * PECE v1.48 (10/04/2023)
 
