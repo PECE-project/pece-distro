@@ -45,13 +45,16 @@ projects[jquery_update][version] = 2.7
 projects[jquery_update][subdir] = contrib
 
 ; Libraries
+libraries[backbone][type] = library
 libraries[backbone][download][type] = get
 libraries[backbone][download][url] = https://github.com/jashkenas/backbone/archive/1.0.0.tar.gz
 
+libraries[modernizr][type] = library
 libraries[modernizr][download][type] = "get"
 libraries[modernizr][type] = "libraries"
 libraries[modernizr][download][url] = "https://github.com/Modernizr/Modernizr/archive/v2.7.1.tar.gz"
 
+libraries[underscore][type] = library
 libraries[underscore][download][type] = get
 libraries[underscore][download][url] = https://github.com/jashkenas/underscore/archive/1.5.2.zip
 
