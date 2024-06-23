@@ -1,3 +1,17 @@
+Panopoly Core 7.x-1.94, 2024-01-16
+-------------------
+- No changes since last release.
+
+Panopoly Core 7.x-1.93, 2023-12-18
+-------------------
+- Update Panopoly core modules for PHP 8.1 and 8.2.
+- Views pagers don't work when Ajax is enabled (fix cache ballooning
+  issue).
+
+Panopoly Core 7.x-1.92, 2023-06-12
+-------------------
+- No changes since last release.
+
 Panopoly Core 7.x-1.91, 2023-04-05
 -------------------
 - No changes since last release.

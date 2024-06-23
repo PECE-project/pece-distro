@@ -5,12 +5,13 @@ core = 7.x
 
 ; Panels and Chaos Tools Magic
 
-projects[ctools][version] = 1.20
+projects[ctools][version] = 1.21
 projects[ctools][subdir] = contrib
-projects[ctools][patch][1910608] = https://www.drupal.org/files/issues/2020-12-01/views_content-keyword-substitution-1910608-83.patch
+projects[ctools][patch][1910608] = https://www.drupal.org/files/issues/2023-06-22/views_content-keyword-substitution-1910608-84.patch
 projects[ctools][patch][1000146] = https://www.drupal.org/files/issues/2019-01-07/views_panes-more_link_text-1000146-32.patch
+projects[ctools][patch][3284043] = https://www.drupal.org/files/issues/2022-06-03/ctools-3284043-php8-compatibility.patch
 
-projects[panels][version] = 3.10
+projects[panels][version] = 3.12
 projects[panels][subdir] = contrib
 
 projects[panels_breadcrumbs][version] = 2.6
@@ -32,11 +33,10 @@ projects[fape][subdir] = contrib
 
 ; Views Magic
 
-projects[views][version] = 3.25
+projects[views][version] = 3.29
 projects[views][subdir] = contrib
-projects[views][patch][2037469] = https://www.drupal.org/files/issues/2021-09-17/views-exposed-sorts-2037469-29.patch
-projects[views][patch][2977851] = https://www.drupal.org/files/issues/2019-09-23/2977851-views-php72-count-14_0.patch
 projects[views][patch][2284423] = https://www.drupal.org/files/issues/2019-04-29/views-same_sort_twice-2284423-3.patch
+projects[views][patch][3385759] = https://www.drupal.org/files/issues/2023-09-06/views-htmlspecialchars_decode-php81-3385759-2.patch
 
 projects[views_autocomplete_filters][version] = 1.2
 projects[views_autocomplete_filters][subdir] = contrib
@@ -44,9 +44,8 @@ projects[views_autocomplete_filters][patch][2374709] = http://www.drupal.org/fil
 projects[views_autocomplete_filters][patch][2317351] = http://www.drupal.org/files/issues/views_autocomplete_filters-content-pane-2317351-4.patch
 projects[views_autocomplete_filters][patch][2404893] = https://www.drupal.org/files/issues/2404893-grammar_correction-11.patch
 
-projects[views_bulk_operations][version] = 3.6
+projects[views_bulk_operations][version] = 3.7
 projects[views_bulk_operations][subdir] = contrib
-projects[views_bulk_operations][patch][3256781] = https://www.drupal.org/files/issues/2022-01-03/vbo-php8-3256781-2.patch
 
 ; The Usual Suspects
 
@@ -58,6 +57,7 @@ projects[token][subdir] = contrib
 
 projects[entity][version] = 1.10
 projects[entity][subdir] = contrib
+projects[entity][patch][3328049] = https://www.drupal.org/files/issues/2023-04-30/3328049-10.patch
 
 projects[libraries][version] = 2.5
 projects[libraries][subdir] = contrib
@@ -67,16 +67,14 @@ projects[transliteration][subdir] = contrib
 
 ; Field modules
 
-projects[date][version] = 2.12
+projects[date][version] = 2.14
 projects[date][subdir] = contrib
 
-projects[entityreference][version] = 1.5
+projects[entityreference][version] = 1.9
 projects[entityreference][subdir] = contrib
 
-projects[field_group][version] = 1.6
+projects[field_group][version] = 1.8
 projects[field_group][subdir] = contrib
-projects[field_group][patch][3085340] = https://www.drupal.org/files/issues/2019-10-03/3085340-2.patch
-projects[field_group][patch][3083542] = https://www.drupal.org/files/issues/2020-06-09/field_group-php-7.2-compatible-3083542-5.patch
 
 projects[link][version] = 1.11
 projects[link][subdir] = contrib
@@ -87,7 +85,7 @@ projects[apps][version] = 1.1
 projects[apps][subdir] = contrib
 projects[apps][patch][2945929] = https://www.drupal.org/files/issues/apps-php7-compat-2945929.patch
 
-projects[features][version] = 2.14
+projects[features][version] = 2.15
 projects[features][subdir] = contrib
 
 projects[strongarm][version] = 2.0
@@ -104,10 +102,10 @@ projects[defaultcontent][patch][1757782] = http://drupal.org/files/1757782-canno
 projects[defaultcontent][patch][2946138] = https://www.drupal.org/files/issues/defaultcontent-php7-compat-2946138.patch
 projects[defaultcontent][patch][3172478] = https://www.drupal.org/files/issues/2020-09-22/defaultcontent-php74-implode-3172478-2.patch
 
-projects[migrate][version] = "2.11"
+projects[migrate][version] = "2.12"
 projects[migrate][type] = "module"
 projects[migrate][subdir] = "contrib"
-projects[migrate][patch][3253653] = https://www.drupal.org/files/issues/2021-12-09/migrate-php80-3253653-2.patch
+projects[migrate][patch][3401693] = https://www.drupal.org/files/issues/2023-11-14/migrate-dynamic-properties-php82-3401693-3.patch
 
 projects[migrate_extras][version] = "2.5"
 projects[migrate_extras][type] = "module"
