@@ -1,3 +1,16 @@
+Panopoly Magic 7.x-1.94, 2024-01-16
+-------------------
+- No changes since last release.
+
+Panopoly Magic 7.x-1.93, 2023-12-18
+-------------------
+- PHP warnings when updating previews of non-FAPE widgets.
+- Reusable widgets can't be created when live previews are disabled.
+
+Panopoly Magic 7.x-1.92, 2023-06-12
+-------------------
+- No changes since last release.
+
 Panopoly Magic 7.x-1.91, 2023-04-05
 -------------------
 - No changes since last release.

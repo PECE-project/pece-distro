@@ -405,27 +405,6 @@ function panopoly_magic_form_alter(&$form, &$form_state, $form_id) {
       }
     }
 
-    if ($form_id == 'fieldable_panels_panes_fieldable_panels_pane_content_type_edit_form') {
-      // Hide the revision fieldset.
-      $form['revision']['#access'] = FALSE;
-      // Hide the 'Admin' fieldset.
-      $form['admin']['#access'] = FALSE;
-      // Move the 'Admin title' under reusable like in FPP 1.8 and earlier.
-      $form['reusable']['admin_title'] = $form['admin']['admin_title'];
-      $form['reusable']['admin_title']['#states'] = array(
-        'visible' => array(
-          ':input[name="reusable"]' => array('checked' => TRUE),
-        )
-      );
-      unset($form['admin']['admin_title']);
-      // Move the warning down.
-      $form['reusable']['warning']['#weight'] = 100;
-
-      // Add our own submit handler ALWAYS, not just when we are generating
-      // a preview.
-      $form['#submit'][] = '_panopoly_magic_fieldable_panels_panes_fieldable_panels_pane_content_type_edit_form_submit';
-    }
-
     // Set the configuration and determine the content for the pane
     $configuration_ids = array(
       'ctools_entity_field_content_type_formatter_options',
@@ -540,6 +519,30 @@ function panopoly_magic_form_alter(&$form, &$form_state, $form_id) {
       }
     }
     $form['buttons']['#weight'] = -99;
+  }
+
+  /**
+   * Globally improve the reusable fields when editing FPPs.
+   */
+  if ($form_id == 'fieldable_panels_panes_fieldable_panels_pane_content_type_edit_form') {
+    // Hide the revision fieldset.
+    $form['revision']['#access'] = FALSE;
+    // Hide the 'Admin' fieldset.
+    $form['admin']['#access'] = FALSE;
+    // Move the 'Admin title' under reusable like in FPP 1.8 and earlier.
+    $form['reusable']['admin_title'] = $form['admin']['admin_title'];
+    $form['reusable']['admin_title']['#states'] = array(
+      'visible' => array(
+        ':input[name="reusable"]' => array('checked' => TRUE),
+      )
+    );
+    unset($form['admin']['admin_title']);
+    // Move the warning down.
+    $form['reusable']['warning']['#weight'] = 100;
+
+    // Add our own submit handler ALWAYS, not just when we are generating
+    // a preview.
+    $form['#submit'][] = '_panopoly_magic_fieldable_panels_panes_fieldable_panels_pane_content_type_edit_form_submit';
   }
 
   /**
@@ -691,7 +694,7 @@ function panopoly_magic_ajax_update_preview($form, $form_state) {
   // If this is a field is being editted via FAPE, then we need to update the
   // entity in context with the temporary value of the field, in order for it
   // to be rendered correctly in the preview.
-  if (isset($form_state['values']) && $form_state['plugin']['name'] == 'entity_field' && isset($form_state['subform_id']) && $form_state['subform_id'] == 'fape_field_edit_field_form' && isset($form['#panopoly_magic_preview_info']['context']['panelizer'])) {
+  if (isset($form_state['values']) && isset($form_state['plugin']) && $form_state['plugin']['name'] == 'entity_field' && isset($form_state['subform_id']) && $form_state['subform_id'] == 'fape_field_edit_field_form' && isset($form['#panopoly_magic_preview_info']['context']['panelizer'])) {
     $entity_type = $form['#panopoly_magic_preview_info']['context']['panelizer']->type[2];
     $entity =& $form['#panopoly_magic_preview_info']['context']['panelizer']->data;
     foreach ($form_state['field'] as $field_name => $lang_field) {
