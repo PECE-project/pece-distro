@@ -116,7 +116,7 @@ projects[libraries][subdir] = contrib
 projects[features][version] = 2.15
 projects[features][subdir] = contrib
 
-projects[xautoload][version] = 5.8
+projects[xautoload][version] = 5.9
 projects[xautoload][subdir]  = contrib
 
 projects[prevent_js_alerts][version] = 1.0
