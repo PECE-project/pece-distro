@@ -1,5 +1,18 @@
 # Changelog
 
+## 3.4.3 (non-ruby only)
+
+* Fix malformed `math.div` expressions. [#1225](https://github.com/twbs/bootstrap-sass/pull/1225)
+
+## 3.4.2 (non-ruby only)
+
+* Compatibility with Sass 1.33. [#1221](https://github.com/twbs/bootstrap-sass/pull/1221)
+
+## 3.4.0
+
+* Bootstrap rubygem now depends on SassC instead of Sass.
+* Compass no longer supported.
+
 ## 3.3.7
 
 * Allows jQuery 3.x in bower.json. [#1048](https://github.com/twbs/bootstrap-sass/issues/1048)
