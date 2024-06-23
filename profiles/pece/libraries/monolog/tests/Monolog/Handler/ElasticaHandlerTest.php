@@ -18,10 +18,10 @@ use Monolog\Level;
 use Elastica\Client;
 use Elastica\Request;
 use Elastica\Response;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 
-/**
- * @group Elastica
- */
+#[Group('Elastica')]
 class ElasticaHandlerTest extends TestCase
 {
     /**
@@ -128,8 +128,8 @@ class ElasticaHandlerTest extends TestCase
 
     /**
      * @covers       Monolog\Handler\ElasticaHandler::bulkSend
-     * @dataProvider providerTestConnectionErrors
      */
+    #[DataProvider('providerTestConnectionErrors')]
     public function testConnectionErrors($ignore, $expectedError)
     {
         $clientOpts = ['host' => '127.0.0.1', 'port' => 1];
@@ -146,7 +146,7 @@ class ElasticaHandlerTest extends TestCase
         }
     }
 
-    public function providerTestConnectionErrors(): array
+    public static function providerTestConnectionErrors(): array
     {
         return [
             [false, ['RuntimeException', 'Error sending messages to Elasticsearch']],

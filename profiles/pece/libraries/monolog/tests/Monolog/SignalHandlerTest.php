@@ -13,6 +13,7 @@ namespace Monolog;
 
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\TestHandler;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
 use Monolog\Test\TestCase;
 
@@ -34,7 +35,7 @@ class SignalHandlerTest extends TestCase
                 $this->asyncSignalHandling = pcntl_async_signals();
             }
             if (function_exists('pcntl_sigprocmask')) {
-                pcntl_sigprocmask(SIG_BLOCK, [], $this->blockedSignals);
+                pcntl_sigprocmask(SIG_SETMASK, [], $this->blockedSignals);
             }
         }
     }
@@ -122,12 +123,12 @@ class SignalHandlerTest extends TestCase
     }
 
     /**
-     * @dataProvider defaultPreviousProvider
      * @depends testRegisterSignalHandler
      * @requires function pcntl_fork
      * @requires function pcntl_sigprocmask
      * @requires function pcntl_waitpid
      */
+    #[DataProvider('defaultPreviousProvider')]
     public function testRegisterDefaultPreviousSignalHandler($signo, $callPrevious, $expected)
     {
         $this->setSignalHandler($signo, SIG_DFL);
@@ -146,7 +147,7 @@ class SignalHandlerTest extends TestCase
             posix_kill(posix_getpid(), $signo);
             pcntl_signal_dispatch();
             // If $callPrevious is true, SIGINT should terminate by this line.
-            pcntl_sigprocmask(SIG_BLOCK, [], $oldset);
+            pcntl_sigprocmask(SIG_SETMASK, [], $oldset);
             file_put_contents($path, implode(' ', $oldset), FILE_APPEND);
             posix_kill(posix_getpid(), $signo);
             pcntl_signal_dispatch();
@@ -159,7 +160,7 @@ class SignalHandlerTest extends TestCase
         $this->assertSame($expected, file_get_contents($path));
     }
 
-    public function defaultPreviousProvider()
+    public static function defaultPreviousProvider()
     {
         if (!defined('SIGCONT') || !defined('SIGINT') || !defined('SIGURG')) {
             return [];
@@ -174,10 +175,10 @@ class SignalHandlerTest extends TestCase
     }
 
     /**
-     * @dataProvider callablePreviousProvider
      * @depends testRegisterSignalHandler
      * @requires function pcntl_signal_get_handler
      */
+    #[DataProvider('callablePreviousProvider')]
     public function testRegisterCallablePreviousSignalHandler($callPrevious)
     {
         $this->setSignalHandler(SIGURG, SIG_IGN);
@@ -196,7 +197,7 @@ class SignalHandlerTest extends TestCase
         $this->assertSame($callPrevious ? 1 : 0, $previousCalled);
     }
 
-    public function callablePreviousProvider()
+    public static function callablePreviousProvider()
     {
         return [
             [false],
@@ -205,11 +206,11 @@ class SignalHandlerTest extends TestCase
     }
 
     /**
-     * @dataProvider restartSyscallsProvider
      * @depends testRegisterDefaultPreviousSignalHandler
      * @requires function pcntl_fork
      * @requires function pcntl_waitpid
      */
+    #[DataProvider('restartSyscallsProvider')]
     public function testRegisterSyscallRestartingSignalHandler($restartSyscalls)
     {
         $this->setSignalHandler(SIGURG, SIG_IGN);
@@ -248,7 +249,7 @@ class SignalHandlerTest extends TestCase
         }
     }
 
-    public function restartSyscallsProvider()
+    public static function restartSyscallsProvider()
     {
         return [
             [false],
@@ -259,10 +260,10 @@ class SignalHandlerTest extends TestCase
     }
 
     /**
-     * @dataProvider asyncProvider
      * @depends testRegisterDefaultPreviousSignalHandler
      * @requires function pcntl_async_signals
      */
+    #[DataProvider('asyncProvider')]
     public function testRegisterAsyncSignalHandler($initialAsync, $desiredAsync, $expectedBefore, $expectedAfter)
     {
         $this->setSignalHandler(SIGURG, SIG_IGN);
@@ -277,7 +278,7 @@ class SignalHandlerTest extends TestCase
         $this->assertCount($expectedAfter, $handler->getRecords());
     }
 
-    public function asyncProvider()
+    public static function asyncProvider()
     {
         return [
             [false, false, 0, 1],

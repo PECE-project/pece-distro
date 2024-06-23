@@ -1,3 +1,11 @@
+* PECE v1.49 (06/23/2023)
+
+System updates.
+
+Upgrades
+---
+- Upgrade Drupal core version to v7.101
+
 * PECE v1.48 (10/04/2023)
 
 System updates and bug fixes.

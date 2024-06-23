@@ -13,6 +13,7 @@ namespace Monolog\Handler;
 
 use Monolog\Test\TestCase;
 use Monolog\Level;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class StreamHandlerTest extends TestCase
 {
@@ -117,7 +118,7 @@ class StreamHandlerTest extends TestCase
         $handler->handle($this->getRecord());
     }
 
-    public function invalidArgumentProvider()
+    public static function invalidArgumentProvider()
     {
         return [
             [1],
@@ -127,9 +128,9 @@ class StreamHandlerTest extends TestCase
     }
 
     /**
-     * @dataProvider invalidArgumentProvider
      * @covers Monolog\Handler\StreamHandler::__construct
      */
+    #[DataProvider('invalidArgumentProvider')]
     public function testWriteInvalidArgument($invalidArgument)
     {
         $this->expectException(\InvalidArgumentException::class);
@@ -207,8 +208,8 @@ STRING;
     /**
      * @covers Monolog\Handler\StreamHandler::__construct
      * @covers Monolog\Handler\StreamHandler::write
-     * @dataProvider provideNonExistingAndNotCreatablePath
      */
+    #[DataProvider('provideNonExistingAndNotCreatablePath')]
     public function testWriteNonExistingAndNotCreatablePath($nonExistingAndNotCreatablePath)
     {
         if (defined('PHP_WINDOWS_VERSION_BUILD')) {
@@ -232,7 +233,7 @@ STRING;
         $handler->handle($this->getRecord());
     }
 
-    public function provideNonExistingAndNotCreatablePath()
+    public static function provideNonExistingAndNotCreatablePath()
     {
         return [
             '/foo/bar/…' => [
@@ -244,7 +245,7 @@ STRING;
         ];
     }
 
-    public function provideMemoryValues()
+    public static function provideMemoryValues()
     {
         return [
             ['1M', (int) (1024*1024/10)],
@@ -259,9 +260,7 @@ STRING;
         ];
     }
 
-    /**
-     * @dataProvider provideMemoryValues
-     */
+    #[DataProvider('provideMemoryValues')]
     public function testPreventOOMError($phpMemory, $expectedChunkSize): void
     {
         $previousValue = ini_set('memory_limit', $phpMemory);

@@ -13,6 +13,8 @@ namespace Monolog\Formatter;
 
 use Monolog\Test\TestCase;
 use Monolog\Level;
+use PHPUnit\Framework\Attributes\DataProvider;
+use RuntimeException;
 
 /**
  * @covers Monolog\Formatter\LineFormatter
@@ -147,6 +149,8 @@ class LineFormatterTest extends TestCase
         $formatter->allowInlineLineBreaks();
 
         self::assertSame('{"test":"foo'."\n".'bar\\\\name-with-n"}', $formatter->stringify(["test" => "foo\nbar\\name-with-n"]));
+        self::assertSame('["indexed'."\n".'arrays'."\n".'without'."\n".'key","foo'."\n".'bar\\\\name-with-n"]', $formatter->stringify(["indexed\narrays\nwithout\nkey", "foo\nbar\\name-with-n"]));
+        self::assertSame('[{"first":"multi-dimensional'."\n".'arrays"},{"second":"foo'."\n".'bar\\\\name-with-n"}]', $formatter->stringify([["first" => "multi-dimensional\narrays"], ["second" => "foo\nbar\\name-with-n"]]));
     }
 
     public function testDefFormatWithExceptionAndStacktraceParserFull()
@@ -160,15 +164,15 @@ class LineFormatterTest extends TestCase
 
         $trace = explode('[stacktrace]', $message, 2)[1];
 
-        $this->assertStringContainsString('TestCase.php', $trace);
-        $this->assertStringContainsString('TestResult.php', $trace);
+        $this->assertStringContainsString('TestSuite.php', $trace);
+        $this->assertStringContainsString('TestRunner.php', $trace);
     }
 
     public function testDefFormatWithExceptionAndStacktraceParserCustom()
     {
         $formatter = new LineFormatter(null, 'Y-m-d');
         $formatter->includeStacktraces(true, function ($line) {
-            if (strpos($line, 'TestCase.php') === false) {
+            if (strpos($line, 'TestSuite.php') === false) {
                 return $line;
             }
         });
@@ -177,8 +181,8 @@ class LineFormatterTest extends TestCase
 
         $trace = explode('[stacktrace]', $message, 2)[1];
 
-        $this->assertStringNotContainsString('TestCase.php', $trace);
-        $this->assertStringContainsString('TestResult.php', $trace);
+        $this->assertStringNotContainsString('TestSuite.php', $trace);
+        $this->assertStringContainsString('TestRunner.php', $trace);
     }
 
     public function testDefFormatWithExceptionAndStacktraceParserEmpty()
@@ -273,6 +277,65 @@ class LineFormatterTest extends TestCase
         $message = $formatter->format($this->getRecord(message: "foo\nbar"));
 
         $this->assertMatchesRegularExpression('/foo\nbar/', $message);
+    }
+
+    public function testIndentStackTraces(): void
+    {
+        $formatter = new LineFormatter();
+        $formatter->includeStacktraces();
+        //$formatter->allowInlineLineBreaks();
+        $formatter->indentStackTraces('    ');
+        $message = $formatter->format($this->getRecord(message: "foo", context: ['exception' => new RuntimeException('lala')]));
+
+        $this->assertStringContainsString('    [stacktrace]', $message);
+        $this->assertStringContainsString('    #0', $message);
+        $this->assertStringContainsString('    #1', $message);
+    }
+
+    public function testBasePath(): void
+    {
+        $formatter = new LineFormatter();
+        $formatter->includeStacktraces();
+        $formatter->setBasePath(dirname(dirname(dirname(__DIR__))));
+        $formatter->indentStackTraces('    ');
+        $message = $formatter->format($this->getRecord(message: "foo", context: ['exception' => new RuntimeException('lala')]));
+
+        $this->assertStringContainsString('    [stacktrace]', $message);
+        $this->assertStringContainsString('    #0 vendor/phpunit/phpunit/src/Framework/TestCase.php', $message);
+        $this->assertStringContainsString('    #1 vendor/phpunit/phpunit/', $message);
+    }
+
+    #[DataProvider('providerMaxLevelNameLength')]
+    public function testMaxLevelNameLength(?int $maxLength, Level $logLevel, string $expectedLevelName): void
+    {
+        $formatter = new LineFormatter();
+        $formatter->setMaxLevelNameLength($maxLength);
+        $message = $formatter->format($this->getRecord(message: "foo\nbar", level: $logLevel));
+
+        $this->assertStringContainsString("test.$expectedLevelName:", $message);
+    }
+
+    public static function providerMaxLevelNameLength(): array
+    {
+        return [
+            'info_no_max_length' => [
+                'maxLength' => null,
+                'logLevel' => Level::Info,
+                'expectedLevelName' => 'INFO',
+            ],
+
+            'error_max_length_3' => [
+                'maxLength' => 3,
+                'logLevel' => Level::Error,
+                'expectedLevelName' => 'ERR',
+            ],
+
+            'debug_max_length_2' => [
+                'maxLength' => 2,
+                'logLevel' => Level::Debug,
+                'expectedLevelName' => 'DE',
+            ],
+        ];
     }
 }
 

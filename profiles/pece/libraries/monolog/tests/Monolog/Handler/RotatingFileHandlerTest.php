@@ -13,6 +13,7 @@ namespace Monolog\Handler;
 
 use InvalidArgumentException;
 use Monolog\Test\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * @covers Monolog\Handler\RotatingFileHandler
@@ -47,7 +48,7 @@ class RotatingFileHandlerTest extends TestCase
             unlink($file);
         }
 
-        if ('testRotationWithFolderByDate' === $this->getName(false)) {
+        if ('testRotationWithFolderByDate' === $this->name()) {
             foreach (glob(__DIR__.'/Fixtures/[0-9]*') as $folder) {
                 $this->rrmdir($folder);
             }
@@ -106,9 +107,7 @@ class RotatingFileHandlerTest extends TestCase
         $this->assertEquals('test', file_get_contents($log));
     }
 
-    /**
-     * @dataProvider rotationTests
-     */
+    #[DataProvider('rotationTests')]
     public function testRotation($createFile, $dateFormat, $timeCallback)
     {
         touch($old1 = __DIR__.'/Fixtures/foo-'.date($dateFormat, $timeCallback(-1)).'.rot');
@@ -137,7 +136,7 @@ class RotatingFileHandlerTest extends TestCase
         $this->assertEquals('test', file_get_contents($log));
     }
 
-    public function rotationTests()
+    public static function rotationTests()
     {
         $now = time();
         $dayCallback = function ($ago) use ($now) {
@@ -176,9 +175,7 @@ class RotatingFileHandlerTest extends TestCase
         return $file;
     }
 
-    /**
-     * @dataProvider rotationWithFolderByDateTests
-     */
+    #[DataProvider('rotationWithFolderByDateTests')]
     public function testRotationWithFolderByDate($createFile, $dateFormat, $timeCallback)
     {
         $old1 = $this->createDeep(__DIR__.'/Fixtures/'.date($dateFormat, $timeCallback(-1)).'/foo.rot');
@@ -207,7 +204,7 @@ class RotatingFileHandlerTest extends TestCase
         $this->assertEquals('test', file_get_contents($log));
     }
 
-    public function rotationWithFolderByDateTests()
+    public static function rotationWithFolderByDateTests()
     {
         $now = time();
         $dayCallback = function ($ago) use ($now) {
@@ -238,9 +235,7 @@ class RotatingFileHandlerTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dateFormatProvider
-     */
+    #[DataProvider('dateFormatProvider')]
     public function testAllowOnlyFixedDefinedDateFormats($dateFormat, $valid)
     {
         $handler = new RotatingFileHandler(__DIR__.'/Fixtures/foo.rot', 2);
@@ -252,7 +247,7 @@ class RotatingFileHandlerTest extends TestCase
         $this->assertTrue(true);
     }
 
-    public function dateFormatProvider()
+    public static function dateFormatProvider()
     {
         return [
             [RotatingFileHandler::FILE_PER_DAY, true],
@@ -279,9 +274,7 @@ class RotatingFileHandlerTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider filenameFormatProvider
-     */
+    #[DataProvider('filenameFormatProvider')]
     public function testDisallowFilenameFormatsWithoutDate($filenameFormat, $valid)
     {
         $handler = new RotatingFileHandler(__DIR__.'/Fixtures/foo.rot', 2);
@@ -293,7 +286,7 @@ class RotatingFileHandlerTest extends TestCase
         $handler->setFilenameFormat($filenameFormat, RotatingFileHandler::FILE_PER_DAY);
     }
 
-    public function filenameFormatProvider()
+    public static function filenameFormatProvider()
     {
         return [
             ['{filename}', false],
@@ -307,9 +300,7 @@ class RotatingFileHandlerTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider rotationWhenSimilarFilesExistTests
-     */
+    #[DataProvider('rotationWhenSimilarFilesExistTests')]
     public function testRotationWhenSimilarFileNamesExist($dateFormat)
     {
         touch($old1 = __DIR__.'/Fixtures/foo-foo-'.date($dateFormat).'.rot');
@@ -326,7 +317,7 @@ class RotatingFileHandlerTest extends TestCase
         $this->assertTrue(file_exists($log));
     }
 
-    public function rotationWhenSimilarFilesExistTests()
+    public static function rotationWhenSimilarFilesExistTests()
     {
         return [
             'Rotation is triggered when the file of the current day is not present but similar exists'

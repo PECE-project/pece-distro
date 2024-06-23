@@ -19,10 +19,12 @@ use Elasticsearch\Client;
 use Elastic\Elasticsearch\Client as Client8;
 use Elasticsearch\ClientBuilder;
 use Elastic\Elasticsearch\ClientBuilder as ClientBuilder8;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 
-/**
- * @group Elasticsearch
- */
+#[Group('Elasticsearch')]
+#[CoversClass(ElasticsearchHandler::class)]
 class ElasticsearchHandlerTest extends TestCase
 {
     protected Client|Client8 $client;
@@ -57,9 +59,6 @@ class ElasticsearchHandlerTest extends TestCase
         unset($this->client);
     }
 
-    /**
-     * @covers Monolog\Handler\ElasticsearchHandler::setFormatter
-     */
     public function testSetFormatter()
     {
         $handler = new ElasticsearchHandler($this->client);
@@ -70,9 +69,6 @@ class ElasticsearchHandlerTest extends TestCase
         $this->assertEquals('type_new', $handler->getFormatter()->getType());
     }
 
-    /**
-     * @covers Monolog\Handler\ElasticsearchHandler::setFormatter
-     */
     public function testSetFormatterInvalid()
     {
         $handler = new ElasticsearchHandler($this->client);
@@ -84,10 +80,6 @@ class ElasticsearchHandlerTest extends TestCase
         $handler->setFormatter($formatter);
     }
 
-    /**
-     * @covers Monolog\Handler\ElasticsearchHandler::__construct
-     * @covers Monolog\Handler\ElasticsearchHandler::getOptions
-     */
     public function testOptions()
     {
         $expected = [
@@ -105,10 +97,7 @@ class ElasticsearchHandlerTest extends TestCase
         $this->assertEquals($expected, $handler->getOptions());
     }
 
-    /**
-     * @covers       Monolog\Handler\ElasticsearchHandler::bulkSend
-     * @dataProvider providerTestConnectionErrors
-     */
+    #[DataProvider('providerTestConnectionErrors')]
     public function testConnectionErrors($ignore, $expectedError)
     {
         $hosts = ['http://127.0.0.1:1'];
@@ -128,7 +117,7 @@ class ElasticsearchHandlerTest extends TestCase
         }
     }
 
-    public function providerTestConnectionErrors(): array
+    public static function providerTestConnectionErrors(): array
     {
         return [
             [false, ['RuntimeException', 'Error sending messages to Elasticsearch']],

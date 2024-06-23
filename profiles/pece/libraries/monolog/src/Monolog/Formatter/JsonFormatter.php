@@ -107,6 +107,9 @@ class JsonFormatter extends NormalizerFormatter
         };
     }
 
+    /**
+     * @return $this
+     */
     public function includeStacktraces(bool $include = true): self
     {
         $this->includeStacktraces = $include;
@@ -183,6 +186,10 @@ class JsonFormatter extends NormalizerFormatter
 
             if ($data instanceof Stringable) {
                 return $data->__toString();
+            }
+
+            if (\get_class($data) === '__PHP_Incomplete_Class') {
+                return new \ArrayObject($data);
             }
 
             return $data;

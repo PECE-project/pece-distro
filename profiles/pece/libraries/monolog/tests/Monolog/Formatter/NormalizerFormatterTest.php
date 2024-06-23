@@ -131,11 +131,25 @@ class NormalizerFormatterTest extends TestCase
     public function testFormatToStringExceptionHandle()
     {
         $formatter = new NormalizerFormatter('Y-m-d');
-        $this->expectException('RuntimeException');
-        $this->expectExceptionMessage('Could not convert to string');
-        $formatter->format($this->getRecord(context: [
+        $formatted = $formatter->format($this->getRecord(context: [
             'myObject' => new TestToStringError(),
         ]));
+        $this->assertEquals(
+            [
+                'level_name' => Level::Warning->getName(),
+                'level' => Level::Warning->value,
+                'channel' => 'test',
+                'message' => 'test',
+                'context' => [
+                    'myObject' => [
+                        TestToStringError::class => [],
+                    ],
+                ],
+                'datetime' => date('Y-m-d'),
+                'extra' => [],
+            ],
+            $formatted
+        );
     }
 
     public function testBatchFormat()
@@ -400,6 +414,20 @@ class NormalizerFormatterTest extends TestCase
             __FILE__ .':'.(__LINE__-9),
             $result['context']['exception']['trace'][0]
         );
+    }
+
+    public function testCanNormalizeIncompleteObject(): void
+    {
+        $serialized = "O:17:\"Monolog\TestClass\":1:{s:23:\"\x00Monolog\TestClass\x00name\";s:4:\"test\";}";
+        $object = unserialize($serialized);
+
+        $formatter = new NormalizerFormatter();
+        $record = $this->getRecord(context: ['object' => $object]);
+        $result = $formatter->format($record);
+
+        $this->assertEquals([
+            '__PHP_Incomplete_Class' => 'Monolog\\TestClass',
+        ], $result['context']['object']);
     }
 
     private function throwHelper($arg)

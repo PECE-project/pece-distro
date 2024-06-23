@@ -13,15 +13,14 @@ namespace Monolog\Handler;
 
 use Monolog\Level;
 use Monolog\Test\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * @covers Monolog\Handler\TestHandler
  */
 class TestHandlerTest extends TestCase
 {
-    /**
-     * @dataProvider methodProvider
-     */
+    #[DataProvider('methodProvider')]
     public function testHandler($method, Level $level)
     {
         $handler = new TestHandler;
@@ -102,7 +101,7 @@ class TestHandlerTest extends TestCase
         ]));
     }
 
-    public function methodProvider()
+    public static function methodProvider()
     {
         return [
             ['Emergency', Level::Emergency],
