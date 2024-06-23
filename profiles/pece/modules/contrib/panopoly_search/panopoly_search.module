@@ -3,6 +3,36 @@
 include_once 'panopoly_search.features.inc';
 
 /**
+ * Implements hook_apps_app_info().
+ */
+function panopoly_search_apps_app_info() {
+  return array(
+    'configure form' => 'panopoly_search_configure_form',
+  );
+}
+
+/**
+ * Configuration Form for Panopoly Search.
+ */
+function panopoly_search_configure_form($form, &$form_state) {
+  $form = array();
+
+  $form['panopoly_search_keys_mode'] = array(
+    '#title' => t('Search keywords mode'),
+    '#type' => 'select',
+    '#options' => array(
+      'path' => t("Path"),
+      'get' => t("Arguments"),
+    ),
+    '#required' => TRUE,
+    '#default_value' => variable_get('panopoly_search_keys_mode', 'path'),
+    '#description' => t('Where do you want search keyswords to appear in the URL?'),
+  );
+
+  return system_settings_form($form);
+}
+
+/**
  * Implementation of hook_ctools_plugin_directory()
  */
 function panopoly_search_ctools_plugin_directory($module, $plugin) {
@@ -36,7 +66,16 @@ function panopoly_search_all_form_submit($form, &$form_state) {
 
   $module = !empty($form_state['values']['module']) ? $form_state['values']['module'] : 'site';
   $module = ($module === 'node') ? 'site' : $module;
-  $form_state['redirect'] = array('search/' . $module . '/' . $keys);
+  if (variable_get('panopoly_search_keys_mode', 'path') === 'get') {
+    $form_state['redirect'] = array('search/' . $module, array(
+      'query' => array(
+        'keys' => $keys,
+      ),
+    ));
+  }
+  else {
+    $form_state['redirect'] = array('search/' . $module . '/' . $keys);
+  }
 }
 
 /**

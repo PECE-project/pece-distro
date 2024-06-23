@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * panopoly_search.pages_default.inc
@@ -17,27 +18,29 @@ function panopoly_search_default_page_manager_pages() {
   $page->admin_description = '';
   $page->path = 'search/site/!keywords';
   $page->access = array(
+    'logic' => 'and',
     'plugins' => array(
       0 => array(
+        'context' => 'logged-in-user',
         'name' => 'perm',
+        'not' => FALSE,
         'settings' => array(
           'perm' => 'search content',
         ),
-        'context' => 'logged-in-user',
-        'not' => FALSE,
       ),
     ),
-    'logic' => 'and',
-    'type' => 'none',
     'settings' => NULL,
+    'type' => 'none',
   );
   $page->menu = array();
   $page->arguments = array(
     'keywords' => array(
       'id' => 1,
-      'identifier' => 'String',
-      'name' => 'string',
+      'identifier' => 'String or query string',
+      'name' => 'string_or_query',
       'settings' => array(
+        'fallback_value' => '',
+        'key' => 'keys',
         'use_tail' => 0,
       ),
     ),
@@ -55,41 +58,41 @@ function panopoly_search_default_page_manager_pages() {
   $handler->handler = 'panel_context';
   $handler->weight = -30;
   $handler->conf = array(
-    'title' => 'Solr Search Panel',
-    'no_blocks' => 0,
-    'pipeline' => 'ipe',
-    'css_id' => 'solr-search-panel',
-    'css' => '',
-    'contexts' => array(),
-    'relationships' => array(),
     'access' => array(
+      'logic' => 'and',
       'plugins' => array(
         1 => array(
           'name' => 'solr',
-          'settings' => NULL,
           'not' => FALSE,
+          'settings' => NULL,
         ),
         2 => array(
           'name' => 'search_api_index',
-          'settings' => NULL,
           'not' => FALSE,
+          'settings' => NULL,
         ),
       ),
-      'logic' => 'and',
     ),
+    'contexts' => array(),
+    'css' => '',
+    'css_id' => 'solr-search-panel',
+    'no_blocks' => 0,
+    'panels_breadcrumbs_home' => 1,
+    'panels_breadcrumbs_paths' => 'search/site',
     'panels_breadcrumbs_state' => 1,
     'panels_breadcrumbs_titles' => 'Search',
-    'panels_breadcrumbs_paths' => 'search/site',
-    'panels_breadcrumbs_home' => 1,
+    'pipeline' => 'ipe',
+    'relationships' => array(),
+    'title' => 'Solr Search Panel',
   );
   $display = new panels_display();
   $display->layout = 'radix_burr_flipped';
   $display->layout_settings = array();
   $display->panel_settings = array(
     'style_settings' => array(
+      'contentmain' => NULL,
       'default' => NULL,
       'sidebar' => NULL,
-      'contentmain' => NULL,
     ),
   );
   $display->cache = array();
@@ -107,12 +110,12 @@ function panopoly_search_default_page_manager_pages() {
   $pane->shown = TRUE;
   $pane->access = array();
   $pane->configuration = array(
-    'type' => 'node',
     'form' => 'advanced',
-    'path_type' => 'default',
-    'path' => '',
     'override_prompt' => FALSE,
+    'path' => '',
+    'path_type' => 'default',
     'prompt' => '',
+    'type' => 'node',
   );
   $pane->cache = array();
   $pane->style = array(
@@ -133,15 +136,15 @@ function panopoly_search_default_page_manager_pages() {
   $pane->shown = TRUE;
   $pane->access = array();
   $pane->configuration = array(
-    'type' => 'node',
-    'form' => 'simple',
-    'path_type' => 'default',
-    'path' => '',
-    'override_prompt' => FALSE,
-    'prompt' => '',
     'context' => array(),
+    'form' => 'simple',
+    'override_prompt' => FALSE,
     'override_title' => 1,
     'override_title_text' => '',
+    'path' => '',
+    'path_type' => 'default',
+    'prompt' => '',
+    'type' => 'node',
   );
   $pane->cache = array();
   $pane->style = array(
@@ -163,11 +166,21 @@ function panopoly_search_default_page_manager_pages() {
   $pane->access = array();
   $pane->configuration = array(
     'context' => array(
-      0 => 'argument_string_1',
+      0 => 'argument_string_or_query_1',
     ),
-    'view_mode' => NULL,
+    'fields_override' => array(
+      'body' => 1,
+      'field_featured_image' => 1,
+      'title' => 1,
+    ),
+    'header_type' => 'none',
+    'items_per_page' => '',
+    'override_title' => '',
+    'override_title_heading' => 'h2',
+    'override_title_text' => '',
+    'view_mode' => 'teaser',
+    'view_settings' => 'fields',
     'widget_title' => '',
-    'items_per_page' => NULL,
   );
   $pane->cache = array();
   $pane->style = array(
@@ -189,9 +202,9 @@ function panopoly_search_default_page_manager_pages() {
   $pane->access = array();
   $pane->configuration = array(
     'context' => array(),
+    'delta' => 'Shb0Q1vWgCArrHrjHszTyhl2jaEhIjzW',
     'override_title' => 1,
     'override_title_text' => 'Filter by Type',
-    'delta' => 'Shb0Q1vWgCArrHrjHszTyhl2jaEhIjzW',
   );
   $pane->cache = array();
   $pane->style = array(
@@ -217,32 +230,32 @@ function panopoly_search_default_page_manager_pages() {
   $handler->handler = 'panel_context';
   $handler->weight = -29;
   $handler->conf = array(
-    'title' => 'Database Search Panel',
-    'no_blocks' => 0,
-    'pipeline' => 'ipe',
-    'css_id' => 'database-search-panel',
-    'css' => '',
-    'contexts' => array(),
-    'relationships' => array(),
     'access' => array(
-      'plugins' => array(),
       'logic' => 'and',
+      'plugins' => array(),
     ),
+    'body_classes_to_add' => '',
+    'body_classes_to_remove' => '',
+    'contexts' => array(),
+    'css' => '',
+    'css_id' => 'database-search-panel',
+    'no_blocks' => 0,
+    'panels_breadcrumbs_home' => 1,
+    'panels_breadcrumbs_paths' => 'search/site',
     'panels_breadcrumbs_state' => 1,
     'panels_breadcrumbs_titles' => 'Search',
-    'panels_breadcrumbs_paths' => 'search/site',
-    'panels_breadcrumbs_home' => 1,
-    'body_classes_to_remove' => '',
-    'body_classes_to_add' => '',
+    'pipeline' => 'ipe',
+    'relationships' => array(),
+    'title' => 'Database Search Panel',
   );
   $display = new panels_display();
   $display->layout = 'radix_burr_flipped';
   $display->layout_settings = array();
   $display->panel_settings = array(
     'style_settings' => array(
+      'contentmain' => NULL,
       'default' => NULL,
       'sidebar' => NULL,
-      'contentmain' => NULL,
     ),
   );
   $display->cache = array();
@@ -260,12 +273,12 @@ function panopoly_search_default_page_manager_pages() {
   $pane->shown = TRUE;
   $pane->access = array();
   $pane->configuration = array(
-    'type' => 'node',
     'form' => 'advanced',
-    'path_type' => 'default',
-    'path' => '',
     'override_prompt' => FALSE,
+    'path' => '',
+    'path_type' => 'default',
     'prompt' => '',
+    'type' => 'node',
   );
   $pane->cache = array();
   $pane->style = array(
@@ -286,15 +299,15 @@ function panopoly_search_default_page_manager_pages() {
   $pane->shown = TRUE;
   $pane->access = array();
   $pane->configuration = array(
-    'type' => 'node',
-    'form' => 'simple',
-    'path_type' => 'default',
-    'path' => '',
-    'override_prompt' => FALSE,
-    'prompt' => '',
     'context' => array(),
+    'form' => 'simple',
+    'override_prompt' => FALSE,
     'override_title' => 1,
     'override_title_text' => '',
+    'path' => '',
+    'path_type' => 'default',
+    'prompt' => '',
+    'type' => 'node',
   );
   $pane->cache = array();
   $pane->style = array(
@@ -315,25 +328,27 @@ function panopoly_search_default_page_manager_pages() {
   $pane->shown = TRUE;
   $pane->access = array();
   $pane->configuration = array(
-    'view_mode' => 'teaser',
-    'widget_title' => '',
-    'items_per_page' => '15',
     'context' => array(
-      0 => 'argument_string_1',
-    ),
-    'fields_override' => array(
-      'field_featured_image' => 1,
-      'title' => 1,
-      'body' => 1,
+      0 => 'argument_string_or_query_1',
     ),
     'exposed' => array(
       'widget_title' => '',
     ),
+    'fields_override' => array(
+      'body' => 1,
+      'field_featured_image' => 1,
+      'title' => 1,
+    ),
+    'header_type' => 'none',
+    'items_per_page' => '15',
     'override_title' => '',
+    'override_title_heading' => 'h2',
     'override_title_text' => '',
-    'view_settings' => 'fields',
-    'use_pager' => 1,
     'pager_id' => '0',
+    'use_pager' => 1,
+    'view_mode' => 'teaser',
+    'view_settings' => 'fields',
+    'widget_title' => '',
   );
   $pane->cache = array();
   $pane->style = array(
@@ -355,9 +370,9 @@ function panopoly_search_default_page_manager_pages() {
   $pane->access = array();
   $pane->configuration = array(
     'context' => array(),
+    'delta' => '1Cpx6naJU4Y3YvKVc0vcLK7Yo0ahaN0l',
     'override_title' => 1,
     'override_title_text' => 'Filter by Type',
-    'delta' => '1Cpx6naJU4Y3YvKVc0vcLK7Yo0ahaN0l',
   );
   $pane->cache = array();
   $pane->style = array(

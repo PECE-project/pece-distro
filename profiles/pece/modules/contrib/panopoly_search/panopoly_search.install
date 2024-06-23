@@ -40,10 +40,10 @@ function panopoly_search_install() {
 }
 
 /**
- * Implemenetation of hook_uninstall()
+ * Implementation of hook_uninstall()
  */
 function panopoly_search_uninstall() {
-
+  variable_del('panopoly_search_keys_mode');
 }
 
 /**
