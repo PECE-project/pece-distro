@@ -1,0 +1,132 @@
+From 289af3993ae669248f729e6181e446712e398ac6 Mon Sep 17 00:00:00 2001
+From: Ayesh Karunaratne <ayesh@aye.sh>
+Date: Fri, 8 Oct 2021 01:22:17 +0530
+Subject: [PATCH 1/3] Issue #3241427: [PHP 8.1] DatabaseStatementBase and
+ DatabaseStatementEmpty signature mismatch fixes
+
+---
+ includes/database/database.inc | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/includes/database/database.inc b/includes/database/database.inc
+index 61ac44f783cd..098084e9fdf5 100644
+--- a/includes/database/database.inc
++++ b/includes/database/database.inc
+@@ -2257,6 +2257,7 @@ protected function __construct($dbh) {
+     $this->setFetchMode(PDO::FETCH_OBJ);
+   }
+ 
++  #[\ReturnTypeWillChange]
+   public function execute($args = array(), $options = array()) {
+     if (isset($options['fetch'])) {
+       if (is_string($options['fetch'])) {
+@@ -2394,23 +2395,27 @@ public function fetchAllAssoc($key, $fetch = NULL) {
+   }
+ 
+   /* Implementations of Iterator. */
+-
++  #[\ReturnTypeWillChange]
+   public function current() {
+     return NULL;
+   }
+ 
++  #[\ReturnTypeWillChange]
+   public function key() {
+     return NULL;
+   }
+ 
++  #[\ReturnTypeWillChange]
+   public function rewind() {
+     // Nothing to do: our DatabaseStatement can't be rewound.
+   }
+ 
++  #[\ReturnTypeWillChange]
+   public function next() {
+     // Do nothing, since this is an always-empty implementation.
+   }
+ 
++  #[\ReturnTypeWillChange]
+   public function valid() {
+     return FALSE;
+   }
+-- 
+GitLab
+
+
+From dbd210d7755d9294c6162538b0d0685db0855af9 Mon Sep 17 00:00:00 2001
+From: mcdruid <drew@mcdruid.co.uk>
+Date: Wed, 10 Nov 2021 15:40:15 +0000
+Subject: [PATCH 2/3] Issue #3241427: [PHP 8.1] Database methods signature
+ mismatch fixes
+
+---
+ includes/database/query.inc | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/includes/database/query.inc b/includes/database/query.inc
+index 048c8a2654d3..4010c26b9b85 100644
+--- a/includes/database/query.inc
++++ b/includes/database/query.inc
+@@ -1697,6 +1697,7 @@ public function __construct($conjunction) {
+    * size of its conditional array minus one, because one element is the
+    * conjunction.
+    */
++  #[\ReturnTypeWillChange]
+   public function count() {
+     return count($this->conditions) - 1;
+   }
+-- 
+GitLab
+
+
+From b53123a61fae8b70f9bf3938b1706f4f29647a35 Mon Sep 17 00:00:00 2001
+From: mcdruid <drew@mcdruid.co.uk>
+Date: Thu, 11 Nov 2021 16:47:33 +0000
+Subject: [PATCH 3/3] Issue #3241427: [PHP 8.1] Database methods signature
+ mismatch fixes
+
+---
+ includes/database/prefetch.inc | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/includes/database/prefetch.inc b/includes/database/prefetch.inc
+index 3b36a4e102d9..1211e4d45730 100644
+--- a/includes/database/prefetch.inc
++++ b/includes/database/prefetch.inc
+@@ -268,6 +268,7 @@ public function setFetchMode($fetchStyle, $a2 = NULL, $a3 = NULL) {
+    * @return
+    *  The current row formatted as requested.
+    */
++  #[\ReturnTypeWillChange]
+   public function current() {
+     if (isset($this->currentRow)) {
+       switch ($this->fetchStyle) {
+@@ -320,14 +321,17 @@ public function current() {
+ 
+   /* Implementations of Iterator. */
+ 
++  #[\ReturnTypeWillChange]
+   public function key() {
+     return $this->currentKey;
+   }
+ 
++  #[\ReturnTypeWillChange]
+   public function rewind() {
+     // Nothing to do: our DatabaseStatement can't be rewound.
+   }
+ 
++  #[\ReturnTypeWillChange]
+   public function next() {
+     if (!empty($this->data)) {
+       $this->currentRow = reset($this->data);
+@@ -339,6 +343,7 @@ public function next() {
+     }
+   }
+ 
++  #[\ReturnTypeWillChange]
+   public function valid() {
+     return isset($this->currentRow);
+   }
+-- 
+GitLab
+
