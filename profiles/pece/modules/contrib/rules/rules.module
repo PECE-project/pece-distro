@@ -539,7 +539,7 @@ function rules_clear_cache() {
 /**
  * Clears a specific cache entry only.
  *
- * @param $cid
+ * @param string $cid
  *   The cache id of the cache entry to clear.
  */
 function rules_clear_cache_entry($cid) {

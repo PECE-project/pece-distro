@@ -876,7 +876,7 @@ class RulesEventSet extends RulesRuleSet {
     $rules = rules_config_load_multiple(FALSE, array(
       'plugin' => 'reaction rule',
       'active' => TRUE,
-      'event' => $event_name
+      'event' => $event_name,
     ));
 
     // No rules, looks like there is a wrong event whitelist. Clear it so it

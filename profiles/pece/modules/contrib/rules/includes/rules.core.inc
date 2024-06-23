@@ -450,6 +450,7 @@ abstract class RulesExtendable extends FacesExtendable {
  * plugins are applied and the root element representing the configuration is
  * saved.
  */
+#[\AllowDynamicProperties]
 abstract class RulesPlugin extends RulesExtendable {
 
   /**
