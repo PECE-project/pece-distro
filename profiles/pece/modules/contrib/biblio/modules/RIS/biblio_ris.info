@@ -4,8 +4,8 @@ core = 7.x
 package = Biblio
 dependencies[] = biblio
 
-; Information added by Drupal.org packaging script on 2022-03-09
-version = "7.x-1.5"
+; Information added by Drupal.org packaging script on 2023-08-14
+version = "7.x-1.6"
 core = "7.x"
 project = "biblio"
-datestamp = "1646848336"
+datestamp = "1692033497"

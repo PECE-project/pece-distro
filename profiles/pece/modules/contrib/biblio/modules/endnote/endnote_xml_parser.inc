@@ -28,6 +28,9 @@ class EndNoteXMLParser {
   private $dups;
   private $unmapped;
 
+  public $contributors_type;
+  public $element;
+
   /**
    *
    */

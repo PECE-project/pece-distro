@@ -131,6 +131,20 @@ require_once drupal_get_path('module', 'biblio') . '/includes/biblio.contributor
  */
 class PARSEENTRIES {
 
+  public $count;
+  public $entries;
+  public $expandMacro;
+  public $fid;
+  public $fieldExtract;
+  public $outsideEntry;
+  public $parseFile;
+  public $preamble;
+  public $removeDelimit;
+  public $strings;
+  public $translate_latex;
+  public $transtab_latex_unicode;
+  public $undefinedStrings;
+
   /**
    * @return
    */

@@ -251,7 +251,7 @@ function biblio_theme($existing, $type, $theme, $path) {
     'biblio_entry' => array(
       'file' => 'includes/biblio_theme.inc',
       'variables' => array(
-        'node',
+        'node' => NULL,
         'style_name' => 'classic',
       ),
     ),
