@@ -11,6 +11,7 @@
  * Links make it easy for users to narrow down their search results by clicking
  * on them. The render arrays use theme_item_list() to generate the HTML markup.
  */
+#[\AllowDynamicProperties]
 class FacetapiWidgetLinks extends FacetapiWidget {
 
   /**
@@ -146,14 +147,14 @@ class FacetapiWidgetLinks extends FacetapiWidget {
               break;
           }
         }
-
-        // Add an ID to identify this link.
-        $variables['options']['attributes']['id'] = drupal_html_id('facetapi-link');
-        $variables['options'] += array(
-          'html' => $item['#html'],
-          'query' => $item['#query'],
-        );
       }
+
+      // Add an ID to identify this link.
+      $variables['options']['attributes']['id'] = drupal_html_id('facetapi-link');
+      $variables['options'] += array(
+        'html' => $item['#html'],
+        'query' => $item['#query'],
+      );
 
       // If the item is active, the li is active
       if ($item['#active']) {
