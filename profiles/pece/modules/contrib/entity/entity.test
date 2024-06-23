@@ -9,6 +9,14 @@
  * Common parent class containing common helpers.
  */
 abstract class EntityWebTestCase extends DrupalWebTestCase {
+  protected $admin_user;
+  protected $taxonomy_vocabulary;
+  protected $user;
+  protected $node;
+  protected $instance;
+  protected $field_id;
+  protected $field;
+  protected $field_name;
 
   /**
    * Creates a new vocabulary.
@@ -541,6 +549,8 @@ class EntityAPIRulesIntegrationTestCase extends EntityWebTestCase {
  * Tests comments with node access.
  */
 class EntityAPICommentNodeAccessTestCase extends CommentHelperCase {
+  protected $accessUser;
+  protected $noAccessUser;
 
   public static function getInfo() {
     return array(

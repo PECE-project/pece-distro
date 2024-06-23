@@ -221,6 +221,11 @@ class EntityDefaultExtraFieldsController implements EntityExtraFieldsControllerI
   protected $entityInfo;
 
   /**
+   * @var array
+   */
+  protected $propertyInfo;
+
+  /**
    * Constructor.
    */
   public function __construct($type) {
